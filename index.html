@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Υπολογισμός Διαφοράς Ημερομηνίας και Ώρας</title>
+    <title>Ξ¥Ο€ΞΏΞ»ΞΏΞ³ΞΉΟƒΞΌΟΟ‚ Ξ”ΞΉΞ±Ο†ΞΏΟΞ¬Ο‚ Ξ—ΞΌΞµΟΞΏΞΌΞ·Ξ½Ξ―Ξ±Ο‚ ΞΊΞ±ΞΉ ΞΟΞ±Ο‚</title>
     <meta name="viewport" content="width=device-width, initial-scale=0.75">
     <style>
        body {
@@ -17,15 +17,15 @@
     margin: 0 auto;
     padding: 20px;
     overflow-x: hidden;
-    text-align: center; /* Κεντράρει τα κείμενα οριζόντια */
+    text-align: center; /* ΓΓ¥Γ­Γ΄Γ±ΓΓ±Γ¥Γ© Γ΄Γ΅ ΓªΓ¥ΓΓ¬Γ¥Γ­Γ΅ Γ―Γ±Γ©Γ¦ΓΌΓ­Γ΄Γ©Γ΅ */
 }
 
 body::before {
     content: "";
-    background-color: rgba(255, 255, 255, 0.8); /* Διαφάνεια του φόντου */
+    background-color: rgba(255, 255, 255, 0.8); /* Γ„Γ©Γ΅Γ¶ΓΓ­Γ¥Γ©Γ΅ Γ΄Γ―Γµ Γ¶ΓΌΓ­Γ΄Γ―Γµ */
     background-position: center;
     background-repeat: no-repeat;
-    opacity: 1; /* Ρυθμίστε τη διαφάνεια εδώ, από 0.0 (αόρατο) έως 1.0 (πλήρης ορατότητα) */
+    opacity: 1; /* Γ‘ΓµΓ¨Γ¬ΓΓ³Γ΄Γ¥ Γ΄Γ§ Γ¤Γ©Γ΅Γ¶ΓΓ­Γ¥Γ©Γ΅ Γ¥Γ¤ΓΎ, Γ΅Γ°ΓΌ 0.0 (Γ΅ΓΌΓ±Γ΅Γ΄Γ―) ΓΓΉΓ² 1.0 (Γ°Γ«ΓΓ±Γ§Γ² Γ―Γ±Γ΅Γ΄ΓΌΓ΄Γ§Γ΄Γ΅) */
     position: absolute;
     top: 0;
     left: 0;
@@ -37,41 +37,41 @@ h1 {
     color: rgb(19, 63, 100);
     font-size: 22px;
     font-weight: bold;
-    text-align: center; /* Κεντράρει τα κείμενα οριζόντια */
+    text-align: center; /* ΓΓ¥Γ­Γ΄Γ±ΓΓ±Γ¥Γ© Γ΄Γ΅ ΓªΓ¥ΓΓ¬Γ¥Γ­Γ΅ Γ―Γ±Γ©Γ¦ΓΌΓ­Γ΄Γ©Γ΅ */
 }
 
 h2 {
     color: rgb(25, 76, 108);
     font-size: 18px;
     font-weight: bold;
-    text-align: center; /* Κεντράρει τα κείμενα οριζόντια */
+    text-align: center; /* ΓΓ¥Γ­Γ΄Γ±ΓΓ±Γ¥Γ© Γ΄Γ΅ ΓªΓ¥ΓΓ¬Γ¥Γ­Γ΅ Γ―Γ±Γ©Γ¦ΓΌΓ­Γ΄Γ©Γ΅ */
 }
 
 label {
     color: rgb(50, 50, 72);
     font-size: 18px;
-    display: block; /* Κεντράρει τα κείμενα κατακόρυφα */
-    text-align: center; /* Κεντράρει τα κείμενα οριζόντια */
+    display: block; /* ΓΓ¥Γ­Γ΄Γ±ΓΓ±Γ¥Γ© Γ΄Γ΅ ΓªΓ¥ΓΓ¬Γ¥Γ­Γ΅ ΓªΓ΅Γ΄Γ΅ΓªΓΌΓ±ΓµΓ¶Γ΅ */
+    text-align: center; /* ΓΓ¥Γ­Γ΄Γ±ΓΓ±Γ¥Γ© Γ΄Γ΅ ΓªΓ¥ΓΓ¬Γ¥Γ­Γ΅ Γ―Γ±Γ©Γ¦ΓΌΓ­Γ΄Γ©Γ΅ */
 }
 
 input {
     color: rgb(50, 50, 72);
     font-size: 18px;
-    display: block; /* Κεντράρει τις εισαγωγές κατακόρυφα */
-    margin: 0 auto; /* Κεντράρει τις εισαγωγές οριζόντια */
+    display: block; /* ΓΓ¥Γ­Γ΄Γ±ΓΓ±Γ¥Γ© Γ΄Γ©Γ² Γ¥Γ©Γ³Γ΅Γ£ΓΉΓ£ΓΓ² ΓªΓ΅Γ΄Γ΅ΓªΓΌΓ±ΓµΓ¶Γ΅ */
+    margin: 0 auto; /* ΓΓ¥Γ­Γ΄Γ±ΓΓ±Γ¥Γ© Γ΄Γ©Γ² Γ¥Γ©Γ³Γ΅Γ£ΓΉΓ£ΓΓ² Γ―Γ±Γ©Γ¦ΓΌΓ­Γ΄Γ©Γ΅ */
 }
 
 p {
     color: rgb(150, 55, 37);
     font-size: 18px;
     font-weight: bold;
-    text-align: center; /* Κεντράρει τα κείμενα οριζόντια */
+    text-align: center; /* ΓΓ¥Γ­Γ΄Γ±ΓΓ±Γ¥Γ© Γ΄Γ΅ ΓªΓ¥ΓΓ¬Γ¥Γ­Γ΅ Γ―Γ±Γ©Γ¦ΓΌΓ­Γ΄Γ©Γ΅ */
 }
 p2 {
     color: rgb(200, 60, 70);
     font-size: 24px;
     font-weight: bold;
-    text-align: center; /* Κεντράρει τα κείμενα οριζόντια */
+    text-align: center; /* ΓΓ¥Γ­Γ΄Γ±ΓΓ±Γ¥Γ© Γ΄Γ΅ ΓªΓ¥ΓΓ¬Γ¥Γ­Γ΅ Γ―Γ±Γ©Γ¦ΓΌΓ­Γ΄Γ©Γ΅ */
 }
 
 button {
@@ -81,10 +81,10 @@ button {
     color: rgb(20, 47, 84);
     font-weight: bold;
     padding: 8px 16px;
-    border: 4px single rgb(20, 47, 84); /* Παράδειγμα: πάχος 2 pixels, συνεχές περίγραμμα, κόκκινο χρώμα */
+    border: 4px single rgb(20, 47, 84); /* ΓΓ΅Γ±ΓΓ¤Γ¥Γ©Γ£Γ¬Γ΅: Γ°ΓΓ·Γ―Γ² 2 pixels, Γ³ΓµΓ­Γ¥Γ·ΓΓ² Γ°Γ¥Γ±ΓΓ£Γ±Γ΅Γ¬Γ¬Γ΅, ΓªΓΌΓªΓªΓ©Γ­Γ― Γ·Γ±ΓΎΓ¬Γ΅ */
     cursor: pointer;
-    display: block; /* Κεντράρει τα κουμπιά κατακόρυφα */
-    margin: 0 auto; /* Κεντράρει τα κουμπιά οριζόντια */
+    display: block; /* ΓΓ¥Γ­Γ΄Γ±ΓΓ±Γ¥Γ© Γ΄Γ΅ ΓªΓ―ΓµΓ¬Γ°Γ©Γ ΓªΓ΅Γ΄Γ΅ΓªΓΌΓ±ΓµΓ¶Γ΅ */
+    margin: 0 auto; /* ΓΓ¥Γ­Γ΄Γ±ΓΓ±Γ¥Γ© Γ΄Γ΅ ΓªΓ―ΓµΓ¬Γ°Γ©Γ Γ―Γ±Γ©Γ¦ΓΌΓ­Γ΄Γ©Γ΅ */
 }
 
 .currentDateTime {
@@ -97,36 +97,36 @@ button {
     </style>
 </head>
 <body>
-    <h1>ΥΠΟΔΙΕΥΘΥΝΣΗ ΑΣΦΑΛΕΙΑΣ ΚΑΤΕΡΙΝΗΣ</h1>
-    <h1>ΟΜΑΔΑ ΔΗΜΟΣΙΑΣ ΑΣΦΑΛΕΙΑΣ</h1>
+    <h1>Ξ¥Ξ ΞΞ”Ξ™Ξ•Ξ¥ΞΞ¥ΞΞ£Ξ— Ξ‘Ξ£Ξ¦Ξ‘Ξ›Ξ•Ξ™Ξ‘Ξ£ ΞΞ‘Ξ¤Ξ•Ξ΅Ξ™ΞΞ—Ξ£</h1>
+    <h1>ΞΞΞ‘Ξ”Ξ‘ Ξ”Ξ—ΞΞΞ£Ξ™Ξ‘Ξ£ Ξ‘Ξ£Ξ¦Ξ‘Ξ›Ξ•Ξ™Ξ‘Ξ£</h1>
     <h1></h1>
     <h1></h1>
-    <h2>Εισάγετε Πραγματική Ημερομηνία και Ώρα</h2>
-    <label for="realDate">Ημερομηνία:</label>
+    <h2>Ξ•ΞΉΟƒΞ¬Ξ³ΞµΟ„Ξµ Ξ ΟΞ±Ξ³ΞΌΞ±Ο„ΞΉΞΊΞ® Ξ—ΞΌΞµΟΞΏΞΌΞ·Ξ½Ξ―Ξ± ΞΊΞ±ΞΉ ΞΟΞ±</h2>
+    <label for="realDate">Γ‡Γ¬Γ¥Γ±Γ―Γ¬Γ§Γ­ΓΓ΅:</label>
     <input type="date" id="realDate">
-    <label for="realTime">Ώρα:</label>
+    <label for="realTime">ΒΏΓ±Γ΅:</label>
     <input type="time" id="realTime">
 
-    <h2>Εισάγετε Ημερομηνία και Ώρα "Καταγραφικού"</h2>
-    <label for="recordDate">Ημερομηνία:</label>
+    <h2>Ξ•ΞΉΟƒΞ¬Ξ³ΞµΟ„Ξµ Ξ—ΞΌΞµΟΞΏΞΌΞ·Ξ½Ξ―Ξ± ΞΊΞ±ΞΉ ΞΟΞ± "ΞΞ±Ο„Ξ±Ξ³ΟΞ±Ο†ΞΉΞΊΞΏΟ"</h2>
+    <label for="recordDate">Γ‡Γ¬Γ¥Γ±Γ―Γ¬Γ§Γ­ΓΓ΅:</label>
     <input type="date" id="recordDate">
-    <label for="recordTime">Ώρα:</label>
+    <label for="recordTime">ΒΏΓ±Γ΅:</label>
     <input type="time" id="recordTime">
 
-    <h2>Επιθυμητή Πραγματική Ημερομηνία και Ώρα Έναρξης</h2>
-    <label for="desiredStartDate">Ημερομηνία:</label>
+    <h2>Ξ•Ο€ΞΉΞΈΟ…ΞΌΞ·Ο„Ξ® Ξ ΟΞ±Ξ³ΞΌΞ±Ο„ΞΉΞΊΞ® Ξ—ΞΌΞµΟΞΏΞΌΞ·Ξ½Ξ―Ξ± ΞΊΞ±ΞΉ ΞΟΞ± ΞΞ½Ξ±ΟΞΎΞ·Ο‚</h2>
+    <label for="desiredStartDate">Γ‡Γ¬Γ¥Γ±Γ―Γ¬Γ§Γ­ΓΓ΅:</label>
     <input type="date" id="desiredStartDate">
-    <label for="desiredStartTime">Ώρα:</label>
+    <label for="desiredStartTime">ΒΏΓ±Γ΅:</label>
     <input type="time" id="desiredStartTime">
 
-    <h2>Επιθυμητή Πραγματική Ημερομηνία και Ώρα Λήξης</h2>
-    <label for="desiredEndDate">Ημερομηνία:</label>
+    <h2>Ξ•Ο€ΞΉΞΈΟ…ΞΌΞ·Ο„Ξ® Ξ ΟΞ±Ξ³ΞΌΞ±Ο„ΞΉΞΊΞ® Ξ—ΞΌΞµΟΞΏΞΌΞ·Ξ½Ξ―Ξ± ΞΊΞ±ΞΉ ΞΟΞ± Ξ›Ξ®ΞΎΞ·Ο‚</h2>
+    <label for="desiredEndDate">Γ‡Γ¬Γ¥Γ±Γ―Γ¬Γ§Γ­ΓΓ΅:</label>
     <input type="date" id="desiredEndDate">
-    <label for="desiredEndTime">Ώρα:</label>
+    <label for="desiredEndTime">ΒΏΓ±Γ΅:</label>
     <input type="time" id="desiredEndTime">
     </p>
     </p>
-    <button onclick="calculateDifference()">Υπολογισμός Διαφοράς</button>
+    <button onclick="calculateDifference()">Ξ¥Ο€ΞΏΞ»ΞΏΞ³ΞΉΟƒΞΌΟΟ‚ Ξ”ΞΉΞ±Ο†ΞΏΟΞ¬Ο‚</button>
     <div class="currentDateTime" id="currentDateTime"></div>
     <p id="result"></p>
 
@@ -156,26 +156,26 @@ button {
             const desiredEndDate = document.getElementById("desiredEndDate").value;
             const desiredEndTime = document.getElementById("desiredEndTime").value;
 
-            // Συνδυάζουμε τις ημερομηνίες και τις ώρες
+            // Γ“ΓµΓ­Γ¤ΓµΓΓ¦Γ―ΓµΓ¬Γ¥ Γ΄Γ©Γ² Γ§Γ¬Γ¥Γ±Γ―Γ¬Γ§Γ­ΓΓ¥Γ² ΓªΓ΅Γ© Γ΄Γ©Γ² ΓΎΓ±Γ¥Γ²
             const realDateTime = new Date(`${realDate}T${realTime}`);
             const recordDateTime = new Date(`${recordDate}T${recordTime}`);
             const desiredStartDateTime = new Date(`${desiredStartDate}T${desiredStartTime}`);
             const desiredEndDateTime = new Date(`${desiredEndDate}T${desiredEndTime}`);
 
-            // Υπολογισμός διαφοράς μεταξύ πραγματικής ημερομηνίας και ημερομηνίας "Καταγραφικού"
+            // Γ•Γ°Γ―Γ«Γ―Γ£Γ©Γ³Γ¬ΓΌΓ² Γ¤Γ©Γ΅Γ¶Γ―Γ±ΓΓ² Γ¬Γ¥Γ΄Γ΅Γ®Γ½ Γ°Γ±Γ΅Γ£Γ¬Γ΅Γ΄Γ©ΓªΓΓ² Γ§Γ¬Γ¥Γ±Γ―Γ¬Γ§Γ­ΓΓ΅Γ² ΓªΓ΅Γ© Γ§Γ¬Γ¥Γ±Γ―Γ¬Γ§Γ­ΓΓ΅Γ² "ΓΓ΅Γ΄Γ΅Γ£Γ±Γ΅Γ¶Γ©ΓªΓ―Γ½"
             const differenceRealAndRecord = recordDateTime - realDateTime;
 
-            // Υπολογισμός διαφοράς μεταξύ των επιθυμητών ημερομηνιών έναρξης και λήξης
+            // Γ•Γ°Γ―Γ«Γ―Γ£Γ©Γ³Γ¬ΓΌΓ² Γ¤Γ©Γ΅Γ¶Γ―Γ±ΓΓ² Γ¬Γ¥Γ΄Γ΅Γ®Γ½ Γ΄ΓΉΓ­ Γ¥Γ°Γ©Γ¨ΓµΓ¬Γ§Γ΄ΓΎΓ­ Γ§Γ¬Γ¥Γ±Γ―Γ¬Γ§Γ­Γ©ΓΎΓ­ ΓΓ­Γ΅Γ±Γ®Γ§Γ² ΓªΓ΅Γ© Γ«ΓΓ®Γ§Γ²
             const desiredDifference = desiredEndDateTime - desiredStartDateTime;
 
-            // Προσθέτουμε τις διαφορές στις επιθυμητές ημερομηνίες έναρξης και λήξης
+            // ΓΓ±Γ―Γ³Γ¨ΓΓ΄Γ―ΓµΓ¬Γ¥ Γ΄Γ©Γ² Γ¤Γ©Γ΅Γ¶Γ―Γ±ΓΓ² Γ³Γ΄Γ©Γ² Γ¥Γ°Γ©Γ¨ΓµΓ¬Γ§Γ΄ΓΓ² Γ§Γ¬Γ¥Γ±Γ―Γ¬Γ§Γ­ΓΓ¥Γ² ΓΓ­Γ΅Γ±Γ®Γ§Γ² ΓªΓ΅Γ© Γ«ΓΓ®Γ§Γ²
             const resultStartDateTime = new Date(desiredStartDateTime.getTime() + differenceRealAndRecord);
             const resultEndDateTime = new Date(desiredEndDateTime.getTime() + differenceRealAndRecord);
 
-            // Εμφανίζουμε τα αποτελέσματα με την επιθυμητή μορφή
+            // Γ…Γ¬Γ¶Γ΅Γ­ΓΓ¦Γ―ΓµΓ¬Γ¥ Γ΄Γ΅ Γ΅Γ°Γ―Γ΄Γ¥Γ«ΓΓ³Γ¬Γ΅Γ΄Γ΅ Γ¬Γ¥ Γ΄Γ§Γ­ Γ¥Γ°Γ©Γ¨ΓµΓ¬Γ§Γ΄Γ Γ¬Γ―Γ±Γ¶Γ
             const resultElement = document.getElementById("result");
-            resultElement.innerHTML = `<p>Για να λάβετε υλικό για το χρονικό διάστημα που δηλώσατε ρυθμίστε το καταγραφικό με:</p>
-          <p> Ημερομηνία Έναρξης:  <p2 class="start-end">${formatDateTime(resultStartDateTime)} </p> Έως Ημερομηνία Λήξης:  <p2 class="start-end">${formatDateTime(resultEndDateTime)}</p>`;
+            resultElement.innerHTML = `<p>Ξ“ΞΉΞ± Ξ½Ξ± Ξ»Ξ¬Ξ²ΞµΟ„Ξµ Ο…Ξ»ΞΉΞΊΟ Ξ³ΞΉΞ± Ο„ΞΏ Ο‡ΟΞΏΞ½ΞΉΞΊΟ Ξ΄ΞΉΞ¬ΟƒΟ„Ξ·ΞΌΞ± Ο€ΞΏΟ… Ξ΄Ξ·Ξ»ΟΟƒΞ±Ο„Ξµ ΟΟ…ΞΈΞΌΞ―ΟƒΟ„Ξµ Ο„ΞΏ ΞΊΞ±Ο„Ξ±Ξ³ΟΞ±Ο†ΞΉΞΊΟ ΞΌΞµ:</p>
+          <p> Ξ—ΞΌΞµΟΞΏΞΌΞ·Ξ½Ξ―Ξ± ΞΞ½Ξ±ΟΞΎΞ·Ο‚:  <p2 class="start-end">${formatDateTime(resultStartDateTime)} </p> ΞΟ‰Ο‚ Ξ—ΞΌΞµΟΞΏΞΌΞ·Ξ½Ξ―Ξ± Ξ›Ξ®ΞΎΞ·Ο‚:  <p2 class="start-end">${formatDateTime(resultEndDateTime)}</p>`;
         }
 
         function displayCurrentDateTime() {
@@ -189,7 +189,7 @@ button {
                 hour12: false,
             };
             const currentDateTimeElement = document.getElementById("currentDateTime");
-            currentDateTimeElement.textContent = "Ημερομηνία/ώρα υπολογισμού: " + now.toLocaleString("el-GR", options);
+            currentDateTimeElement.textContent = "Ξ—ΞΌΞµΟΞΏΞΌΞ·Ξ½Ξ―Ξ±/ΟΟΞ± Ο…Ο€ΞΏΞ»ΞΏΞ³ΞΉΟƒΞΌΞΏΟ: " + now.toLocaleString("el-GR", options);
         }
 
         const button = document.querySelector("button");
@@ -199,14 +199,14 @@ button {
         });
 
         function exportData() {
-            /* Ο κώδικας για την εξαγωγή παραμένει ως έχει */
+            /* Γ ΓªΓΎΓ¤Γ©ΓªΓ΅Γ² Γ£Γ©Γ΅ Γ΄Γ§Γ­ Γ¥Γ®Γ΅Γ£ΓΉΓ£Γ Γ°Γ΅Γ±Γ΅Γ¬ΓΓ­Γ¥Γ© ΓΉΓ² ΓΓ·Γ¥Γ© */
         }
 
     </script>
 
 
-<!-- Προσθέτουμε ένα νέο κουμπί με την ιδέα "Export Data" -->
-<button onclick="exportData()">Λήψη Σημειώσεων</button>
+<!-- ΓΓ±Γ―Γ³Γ¨ΓΓ΄Γ―ΓµΓ¬Γ¥ ΓΓ­Γ΅ Γ­ΓΓ― ΓªΓ―ΓµΓ¬Γ°Γ Γ¬Γ¥ Γ΄Γ§Γ­ Γ©Γ¤ΓΓ΅ "Export Data" -->
+<button onclick="exportData()">Ξ›Ξ®ΟΞ· Ξ£Ξ·ΞΌΞµΞΉΟΟƒΞµΟ‰Ξ½</button>
 
 <script>
 function exportData() {
@@ -222,39 +222,39 @@ function exportData() {
   const desiredEndDate = document.getElementById("desiredEndDate").value;
   const desiredEndTime = document.getElementById("desiredEndTime").value;
 
-  // Παίρνουμε τα αποτελέσματα από το πεδίο του αποτελέσματος
+  // ΓΓ΅ΓΓ±Γ­Γ―ΓµΓ¬Γ¥ Γ΄Γ΅ Γ΅Γ°Γ―Γ΄Γ¥Γ«ΓΓ³Γ¬Γ΅Γ΄Γ΅ Γ΅Γ°ΓΌ Γ΄Γ― Γ°Γ¥Γ¤ΓΓ― Γ΄Γ―Γµ Γ΅Γ°Γ―Γ΄Γ¥Γ«ΓΓ³Γ¬Γ΅Γ΄Γ―Γ²
   const resultText = document.getElementById("result").innerText;
- // Παίρνουμε τα αποτελέσματα από το πεδίο χρόνος υπολογισμού
+ // ΓΓ΅ΓΓ±Γ­Γ―ΓµΓ¬Γ¥ Γ΄Γ΅ Γ΅Γ°Γ―Γ΄Γ¥Γ«ΓΓ³Γ¬Γ΅Γ΄Γ΅ Γ΅Γ°ΓΌ Γ΄Γ― Γ°Γ¥Γ¤ΓΓ― Γ·Γ±ΓΌΓ­Γ―Γ² ΓµΓ°Γ―Γ«Γ―Γ£Γ©Γ³Γ¬Γ―Γ½
   const currentDateTime = document.getElementById("currentDateTime").textContent;
-  // Δημιουργούμε το περιεχόμενο που θα γραφτεί στο αρχείο txt
+  // Γ„Γ§Γ¬Γ©Γ―ΓµΓ±Γ£Γ―Γ½Γ¬Γ¥ Γ΄Γ― Γ°Γ¥Γ±Γ©Γ¥Γ·ΓΌΓ¬Γ¥Γ­Γ― Γ°Γ―Γµ Γ¨Γ΅ Γ£Γ±Γ΅Γ¶Γ΄Γ¥Γ Γ³Γ΄Γ― Γ΅Γ±Γ·Γ¥ΓΓ― txt
   const content = `
-ΥΠΟΔΙΕΥΘΥΝΣΗ ΑΣΦΑΛΕΙΑΣ ΚΑΤΕΡΙΝΗΣ
-ΟΜΑΔΑ ΔΗΜΟΣΙΑΣ ΑΣΦΑΛΕΙΑΣ
+Ξ¥Ξ ΞΞ”Ξ™Ξ•Ξ¥ΞΞ¥ΞΞ£Ξ— Ξ‘Ξ£Ξ¦Ξ‘Ξ›Ξ•Ξ™Ξ‘Ξ£ ΞΞ‘Ξ¤Ξ•Ξ΅Ξ™ΞΞ—Ξ£
+ΞΞΞ‘Ξ”Ξ‘ Ξ”Ξ—ΞΞΞ£Ξ™Ξ‘Ξ£ Ξ‘Ξ£Ξ¦Ξ‘Ξ›Ξ•Ξ™Ξ‘Ξ£
 
-Σημειώσεις Λήψης Βιντεοληπτικού υλικού
+Ξ£Ξ·ΞΌΞµΞΉΟΟƒΞµΞΉΟ‚ Ξ›Ξ®ΟΞ·Ο‚ Ξ’ΞΉΞ½Ο„ΞµΞΏΞ»Ξ·Ο€Ο„ΞΉΞΊΞΏΟ Ο…Ξ»ΞΉΞΊΞΏΟ
 
-Πραγματική Ημερομηνία και Ώρα (κατά τη στιγμή του ελέγχου):
-Ημερομηνία: ${realDate}
-Ώρα: ${realTime}
+Ξ ΟΞ±Ξ³ΞΌΞ±Ο„ΞΉΞΊΞ® Ξ—ΞΌΞµΟΞΏΞΌΞ·Ξ½Ξ―Ξ± ΞΊΞ±ΞΉ ΞΟΞ± (ΞΊΞ±Ο„Ξ¬ Ο„Ξ· ΟƒΟ„ΞΉΞ³ΞΌΞ® Ο„ΞΏΟ… ΞµΞ»Ξ­Ξ³Ο‡ΞΏΟ…):
+Ξ—ΞΌΞµΟΞΏΞΌΞ·Ξ½Ξ―Ξ±: ${realDate}
+ΞΟΞ±: ${realTime}
 
-Ημερομηνία και Ώρα "Καταγραφικού" (κατά τη στιγμή του ελέγχου):
-Ημερομηνία: ${recordDate}
-Ώρα: ${recordTime}
+Ξ—ΞΌΞµΟΞΏΞΌΞ·Ξ½Ξ―Ξ± ΞΊΞ±ΞΉ ΞΟΞ± "ΞΞ±Ο„Ξ±Ξ³ΟΞ±Ο†ΞΉΞΊΞΏΟ" (ΞΊΞ±Ο„Ξ¬ Ο„Ξ· ΟƒΟ„ΞΉΞ³ΞΌΞ® Ο„ΞΏΟ… ΞµΞ»Ξ­Ξ³Ο‡ΞΏΟ…):
+Ξ—ΞΌΞµΟΞΏΞΌΞ·Ξ½Ξ―Ξ±: ${recordDate}
+ΞΟΞ±: ${recordTime}
 
-Επιθυμητή Πραγματική Ημερομηνία και Ώρα Έναρξης Λήψης Βιντεοληπτικού Υλικού:
-Ημερομηνία: ${desiredStartDate}
-Ώρα: ${desiredStartTime}
+Ξ•Ο€ΞΉΞΈΟ…ΞΌΞ·Ο„Ξ® Ξ ΟΞ±Ξ³ΞΌΞ±Ο„ΞΉΞΊΞ® Ξ—ΞΌΞµΟΞΏΞΌΞ·Ξ½Ξ―Ξ± ΞΊΞ±ΞΉ ΞΟΞ± ΞΞ½Ξ±ΟΞΎΞ·Ο‚ Ξ›Ξ®ΟΞ·Ο‚ Ξ’ΞΉΞ½Ο„ΞµΞΏΞ»Ξ·Ο€Ο„ΞΉΞΊΞΏΟ Ξ¥Ξ»ΞΉΞΊΞΏΟ:
+Ξ—ΞΌΞµΟΞΏΞΌΞ·Ξ½Ξ―Ξ±: ${desiredStartDate}
+ΞΟΞ±: ${desiredStartTime}
 
-Επιθυμητή Πραγματική Ημερομηνία και Ώρα Λήξης Λήψης Βιντεοληπτικού Υλικού:
-Ημερομηνία: ${desiredEndDate}
-Ώρα: ${desiredEndTime}
+Ξ•Ο€ΞΉΞΈΟ…ΞΌΞ·Ο„Ξ® Ξ ΟΞ±Ξ³ΞΌΞ±Ο„ΞΉΞΊΞ® Ξ—ΞΌΞµΟΞΏΞΌΞ·Ξ½Ξ―Ξ± ΞΊΞ±ΞΉ ΞΟΞ± Ξ›Ξ®ΞΎΞ·Ο‚ Ξ›Ξ®ΟΞ·Ο‚ Ξ’ΞΉΞ½Ο„ΞµΞΏΞ»Ξ·Ο€Ο„ΞΉΞΊΞΏΟ Ξ¥Ξ»ΞΉΞΊΞΏΟ:
+Ξ—ΞΌΞµΟΞΏΞΌΞ·Ξ½Ξ―Ξ±: ${desiredEndDate}
+ΞΟΞ±: ${desiredEndTime}
 
 
 ${resultText}
 
 ---------------------------------------------------------------------------------
 
-Σημειώσεις σχετικά με το υλικό:
+Ξ£Ξ·ΞΌΞµΞΉΟΟƒΞµΞΉΟ‚ ΟƒΟ‡ΞµΟ„ΞΉΞΊΞ¬ ΞΌΞµ Ο„ΞΏ Ο…Ξ»ΞΉΞΊΟ:
 
 
 
@@ -273,19 +273,19 @@ ${resultText}
 
 `;
 
-  // Δημιουργούμε ένα νέο αντικείμενο Blob με το περιεχόμενο του αρχείου txt
+  // Γ„Γ§Γ¬Γ©Γ―ΓµΓ±Γ£Γ―Γ½Γ¬Γ¥ ΓΓ­Γ΅ Γ­ΓΓ― Γ΅Γ­Γ΄Γ©ΓªΓ¥ΓΓ¬Γ¥Γ­Γ― Blob Γ¬Γ¥ Γ΄Γ― Γ°Γ¥Γ±Γ©Γ¥Γ·ΓΌΓ¬Γ¥Γ­Γ― Γ΄Γ―Γµ Γ΅Γ±Γ·Γ¥ΓΓ―Γµ txt
   const blob = new Blob([content], { type: "text/plain" });
 
-  // Δημιουργούμε ένα σύνδεσμο που αντιπροσωπεύει το αρχείο
+  // Γ„Γ§Γ¬Γ©Γ―ΓµΓ±Γ£Γ―Γ½Γ¬Γ¥ ΓΓ­Γ΅ Γ³Γ½Γ­Γ¤Γ¥Γ³Γ¬Γ― Γ°Γ―Γµ Γ΅Γ­Γ΄Γ©Γ°Γ±Γ―Γ³ΓΉΓ°Γ¥Γ½Γ¥Γ© Γ΄Γ― Γ΅Γ±Γ·Γ¥ΓΓ―
   const link = document.createElement("a");
   link.href = URL.createObjectURL(blob);
-  link.download = "Σημειώσεις.txt"; // Όνομα αρχείου που θα κατεβάσετε
+  link.download = "Ξ£Ξ·ΞΌΞµΞΉΟΟƒΞµΞΉΟ‚.txt"; // ΒΌΓ­Γ―Γ¬Γ΅ Γ΅Γ±Γ·Γ¥ΓΓ―Γµ Γ°Γ―Γµ Γ¨Γ΅ ΓªΓ΅Γ΄Γ¥ΓΆΓΓ³Γ¥Γ΄Γ¥
 
-  // Προσθέτουμε τον σύνδεσμο στην σελίδα και τον κλικάρουμε αυτόματα
+  // ΓΓ±Γ―Γ³Γ¨ΓΓ΄Γ―ΓµΓ¬Γ¥ Γ΄Γ―Γ­ Γ³Γ½Γ­Γ¤Γ¥Γ³Γ¬Γ― Γ³Γ΄Γ§Γ­ Γ³Γ¥Γ«ΓΓ¤Γ΅ ΓªΓ΅Γ© Γ΄Γ―Γ­ ΓªΓ«Γ©ΓªΓΓ±Γ―ΓµΓ¬Γ¥ Γ΅ΓµΓ΄ΓΌΓ¬Γ΅Γ΄Γ΅
   document.body.appendChild(link);
   link.click();
 
-  // Καθαρίζουμε τον σύνδεσμο από την σελίδα για να μην εμφανίζεται
+  // ΓΓ΅Γ¨Γ΅Γ±ΓΓ¦Γ―ΓµΓ¬Γ¥ Γ΄Γ―Γ­ Γ³Γ½Γ­Γ¤Γ¥Γ³Γ¬Γ― Γ΅Γ°ΓΌ Γ΄Γ§Γ­ Γ³Γ¥Γ«ΓΓ¤Γ΅ Γ£Γ©Γ΅ Γ­Γ΅ Γ¬Γ§Γ­ Γ¥Γ¬Γ¶Γ΅Γ­ΓΓ¦Γ¥Γ΄Γ΅Γ©
   document.body.removeChild(link);
 }
 </script>
