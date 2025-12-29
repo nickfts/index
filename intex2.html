@@ -1,0 +1,2773 @@
+<DOCUMENT filename="Υπολογιστής_Διαφοράς_Χρόνου_Καταγραφικών_2.0.1.html">
+<DOCUMENT filename="Υπολογιστής_Διαφοράς_Χρόνου_Καταγραφικών_2.0.html">
+<!DOCTYPE html>
+<html lang="el">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Υπολογσιμός Διαφοράς Χρόνου Καταγραφικών - Υ.Δ.Ε.Ε. Κατερίνης</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <style>
+        /* CSS Variables for Themes */
+        :root {
+            --primary-blue: #133f64;
+            --secondary-blue: #194c6c;
+            --accent-red: #c83c46;
+            --light-gray: #f8f9fa;
+            --medium-gray: #e9ecef;
+            --dark-gray: #323248;
+            --white: #ffffff;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            --shadow-hover: 0 6px 18px rgba(0, 0, 0, 0.12);
+            --radius: 12px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --card-bg: #ffffff;
+            --body-bg: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+            --text-color: #323248;
+            --header-height: 175px;
+        }
+
+        .dark-mode {
+            --primary-blue: #4dabf7;
+            --secondary-blue: #339af0;
+            --accent-red: #ff6b6b;
+            --light-gray: #2d3748;
+            --medium-gray: #4a5568;
+            --dark-gray: #e2e8f0;
+            --white: #1a202c;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            --shadow-hover: 0 6px 18px rgba(0, 0, 0, 0.4);
+            --card-bg: #2d3748;
+            --body-bg: linear-gradient(135deg, #1a202c 0%, #2d3748 100%);
+            --text-color: #e2e8f0;
+        }
+
+        /* Reset & Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+            background: var(--body-bg);
+            color: var(--text-color);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding-top: calc(var(--header-height) + 20px);
+            transition: var(--transition);
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+
+        /* Sticky Header */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to right, var(--primary-blue), var(--secondary-blue));
+            color: white;
+            padding: 15px 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            z-index: 1000;
+            height: var(--header-height);
+            transition: var(--transition);
+        }
+
+        .header-content {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-titles {
+            flex: 1;
+        }
+
+        .header h1 {
+            font-size: 1.4rem;
+            margin-bottom: 2px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .header h2 {
+            font-size: 0.9rem;
+            font-weight: 400;
+            opacity: 0.9;
+        }
+
+        .header-controls {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        /* Header Buttons */
+        .header-btn {
+            background: rgba(255, 255, 255, 0.15);
+            border: none;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: white;
+            font-size: 1rem;
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .header-btn:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: translateY(-2px);
+        }
+
+.header-btn-tooltip {
+    position: absolute;
+    bottom: -32px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 6px 10px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    text-align: center;
+
+    /* FIX ΓΙΑ MOBILE – ΔΕΝ ΚΟΒΕΤΑΙ */
+    max-width: min(260px, calc(100vw - 16px));
+    white-space: normal;
+    word-wrap: break-word;
+
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s;
+    z-index: 2000;
+}
+
+
+        .header-btn:hover .header-btn-tooltip {
+            opacity: 1;
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            width: 100%;
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            height: 6px;
+            overflow: hidden;
+            margin-top: 5px;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(to right, #4dabf7, #ff6b6b);
+            border-radius: 20px;
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        /* Cards */
+        .card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 1.2rem;
+            padding-bottom: 0.8rem;
+            border-bottom: 2px solid var(--medium-gray);
+        }
+
+        .card-icon {
+            color: var(--primary-blue);
+            font-size: 1.3rem;
+            background: rgba(19, 63, 100, 0.1);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .dark-mode .card-icon {
+            background: rgba(77, 171, 247, 0.2);
+        }
+
+        .card-title {
+            color: var(--primary-blue);
+            font-size: 1.2rem;
+            font-weight: 600;
+            flex: 1;
+        }
+
+        .card-number {
+            background: var(--primary-blue);
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        /* Form Elements */
+        .form-group {
+            margin-bottom: 1.2rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-color);
+            font-weight: 500;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .required::after {
+            content: "*";
+            color: var(--accent-red);
+            margin-left: 2px;
+        }
+
+        .input-with-icon {
+            position: relative;
+        }
+
+        .input-with-icon i {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--secondary-blue);
+            font-size: 1.1rem;
+            z-index: 1;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 12px 12px 40px;
+            border: 2px solid var(--medium-gray);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: var(--transition);
+            background: var(--light-gray);
+            color: var(--text-color);
+            font-family: inherit;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 3px rgba(19, 63, 100, 0.1);
+        }
+
+        .form-input.error {
+            border-color: var(--accent-red);
+            background: rgba(200, 60, 70, 0.05);
+        }
+
+        .error-message {
+            color: var(--accent-red);
+            font-size: 0.85rem;
+            margin-top: 0.3rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .datetime-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        @media (max-width: 576px) {
+            .datetime-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Buttons */
+        .buttons-container {
+            display: flex;
+            gap: 10px;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            min-width: 140px;
+            color: white;
+            font-family: inherit;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 5px;
+            height: 5px;
+            background: rgba(255, 255, 255, 0.5);
+            opacity: 0;
+            border-radius: 100%;
+            transform: scale(1, 1) translate(-50%);
+            transform-origin: 50% 50%;
+        }
+
+        .btn:focus:not(:active)::after {
+            animation: ripple 1s ease-out;
+        }
+
+        @keyframes ripple {
+            0% {
+                transform: scale(0, 0);
+                opacity: 0.5;
+            }
+            100% {
+                transform: scale(20, 20);
+                opacity: 0;
+            }
+        }
+
+        .btn-primary {
+            background: linear-gradient(to right, var(--primary-blue), var(--secondary-blue));
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(to right, var(--secondary-blue), var(--primary-blue));
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .btn-secondary {
+            background: var(--medium-gray);
+            color: var(--text-color);
+        }
+
+        .btn-secondary:hover {
+            background: var(--dark-gray);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .btn-success {
+            background: linear-gradient(to right, #2ecc71, #27ae60);
+        }
+
+        .btn-success:hover {
+            background: linear-gradient(to right, #27ae60, #2ecc71);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .btn-warning {
+            background: linear-gradient(to right, #f39c12, #e67e22);
+        }
+
+        .btn-warning:hover {
+            background: linear-gradient(to right, #e67e22, #f39c12);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .btn-danger {
+            background: linear-gradient(to right, var(--accent-red), #e74c3c);
+        }
+
+        .btn-danger:hover {
+            background: linear-gradient(to right, #e74c3c, var(--accent-red));
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none !important;
+            box-shadow: none !important;
+        }
+
+        /* Location Section */
+        .location-permission-info {
+            background: linear-gradient(to right, rgba(77, 171, 247, 0.1), rgba(77, 171, 247, 0.05));
+            border: 1px dashed var(--primary-blue);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+
+        .location-permission-info p {
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .permission-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 0.5rem;
+        }
+
+        .permission-step {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            font-size: 0.85rem;
+        }
+
+        .permission-step i {
+            color: var(--primary-blue);
+            margin-top: 2px;
+        }
+
+        .location-display {
+            background: var(--light-gray);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+            border-left: 4px solid var(--primary-blue);
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .location-info {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .location-icon {
+            color: var(--primary-blue);
+            font-size: 1.2rem;
+            margin-top: 2px;
+        }
+
+        .location-details {
+            flex: 1;
+        }
+
+        .location-name {
+            font-weight: 600;
+            color: var(--primary-blue);
+            margin-bottom: 0.2rem;
+        }
+
+        .location-coords {
+            font-size: 0.9rem;
+            color: var(--text-color);
+            opacity: 0.8;
+        }
+
+        /* Map Container */
+        .map-container {
+            height: 300px;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-top: 1rem;
+            border: 2px solid var(--medium-gray);
+        }
+
+        .map-container.hidden {
+            display: none;
+        }
+
+        /* Results Section */
+        .results-container {
+            background: linear-gradient(to right, rgba(19, 63, 100, 0.05), rgba(19, 63, 100, 0.02));
+            border-left: 5px solid var(--accent-red);
+        }
+
+        .result-item {
+            background: var(--light-gray);
+            padding: 1.2rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .result-label {
+            font-size: 0.9rem;
+            color: var(--text-color);
+            margin-bottom: 0.4rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .result-value {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--accent-red);
+            margin-bottom: 0.4rem;
+        }
+
+        .result-note {
+            font-size: 0.9rem;
+            color: var(--text-color);
+            line-height: 1.5;
+            opacity: 0.8;
+        }
+
+        /* QR Code Section */
+        .qrcode-container {
+            text-align: center;
+            padding: 1.5rem;
+            background: var(--light-gray);
+            border-radius: 8px;
+            margin-top: 1rem;
+            animation: fadeIn 0.5s ease;
+        }
+
+        #qrcode {
+            display: inline-block;
+            margin: 1rem auto;
+            padding: 10px;
+            background: white;
+            border-radius: 8px;
+            min-height: 200px;
+            min-width: 200px;
+        }
+
+        .qrcode-text {
+            background: var(--white);
+            padding: 10px;
+            border-radius: 6px;
+            margin-top: 10px;
+            font-family: monospace;
+            font-size: 0.8rem;
+            word-break: break-all;
+            max-height: 100px;
+            overflow-y: auto;
+        }
+
+        /* Modals */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-content {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            max-width: 500px;
+            width: 100%;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 0.8rem;
+            border-bottom: 2px solid var(--medium-gray);
+        }
+
+        .modal-title {
+            font-size: 1.3rem;
+            color: var(--primary-blue);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-color);
+            transition: var(--transition);
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .close-modal:hover {
+            color: var(--accent-red);
+            background: var(--light-gray);
+        }
+
+        /* History Panel */
+        .history-panel {
+            max-height: 300px;
+            overflow-y: auto;
+            margin-top: 1rem;
+        }
+
+        .history-item {
+            background: var(--light-gray);
+            padding: 0.8rem;
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+            border-left: 3px solid var(--primary-blue);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .history-item:hover {
+            transform: translateX(5px);
+            background: var(--medium-gray);
+        }
+
+        .history-time {
+            font-size: 0.9rem;
+            color: var(--primary-blue);
+            font-weight: 600;
+        }
+
+        .history-details {
+            font-size: 0.85rem;
+            color: var(--text-color);
+            opacity: 0.8;
+        }
+
+        /* Export Options */
+        .export-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 10px;
+            margin-top: 1rem;
+        }
+
+        /* Footer */
+        .footer {
+            margin-top: 2rem;
+            text-align: center;
+            padding: 1rem;
+            color: var(--text-color);
+            font-size: 0.85rem;
+            border-top: 1px solid var(--medium-gray);
+        }
+
+        /* Utility Classes */
+        .text-center { text-align: center; }
+        .mt-1 { margin-top: 1rem; }
+        .mt-2 { margin-top: 2rem; }
+        .mb-1 { margin-bottom: 1rem; }
+        .mb-2 { margin-bottom: 2rem; }
+        .hidden { display: none !important; }
+        .show { display: block !important; }
+        .flex { display: flex; }
+
+        /* Loading States */
+        .loading {
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Print Styles */
+        @media print {
+            .no-print, .header-controls, .buttons-container, 
+            .map-container, .qrcode-container, .modal,
+            .header-btn, .theme-toggle, .footer {
+                display: none !important;
+            }
+            
+            .header {
+                position: static;
+                background: #133f64 !important;
+                color: white !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+                height: auto;
+                padding: 10px;
+            }
+            
+            body {
+                padding-top: 0;
+                background: white !important;
+                color: black !important;
+            }
+            
+            .card {
+                box-shadow: none !important;
+                border: 1px solid #ddd;
+                break-inside: avoid;
+                page-break-inside: avoid;
+            }
+            
+            .result-value {
+                color: black !important;
+            }
+        }
+
+        /* Mobile Optimizations */
+        @media (max-width: 768px) {
+            body {
+                padding-top: calc(var(--header-height) + 10px);
+            }
+            
+            .container {
+                padding: 0 10px;
+            }
+            
+            .header {
+                padding: 12px 15px;
+            }
+            
+            .header h1 {
+                font-size: 1.2rem;
+            }
+            
+            .header h2 {
+                font-size: 0.8rem;
+            }
+            
+            .header-btn {
+                width: 32px;
+                height: 32px;
+                font-size: 0.9rem;
+            }
+            
+            .btn {
+                min-width: 120px;
+                padding: 10px 15px;
+                font-size: 0.9rem;
+            }
+            
+            .card {
+                padding: 1.2rem;
+            }
+            
+            .datetime-container {
+                grid-template-columns: 1fr;
+            }
+            
+            #qrcode {
+                min-height: 180px;
+                min-width: 180px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header h1 {
+                font-size: 1.1rem;
+            }
+            
+            .header-controls {
+                gap: 5px;
+            }
+            
+            .header-btn {
+                width: 30px;
+                height: 30px;
+            }
+            
+            .buttons-container {
+                gap: 8px;
+            }
+            
+            .btn {
+                min-width: 100px;
+                padding: 8px 12px;
+                font-size: 0.85rem;
+            }
+            
+            .export-options {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Fixed Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="header-top">
+                <div class="header-titles">
+                    <h1>Υποδιεύθυνση Δίωξης & Εξιχνίασης Εγκλημάτων Κατερίνης</h1>
+                    <h1>Ομάδα Δίωξης Εγκλημάτων</h1>
+                    <h2>Εργαλείο Υπολογισμού Διαφοράς Χρόνου Καταγραφικών- Έκδοση 2.0</h2>
+                </div>
+                <div class="header-controls">
+                    <button id="themeToggle" class="header-btn" title="Αλλαγή Θέματος">
+                        <i class="fas fa-moon"></i>
+                        <span class="header-btn-tooltip">Αλλαγή θέματος</span>
+                    </button>
+                    <button id="clearHeaderBtn" class="header-btn" title="Καθαρισμός Φόρμας">
+                        <i class="fas fa-trash-alt"></i>
+                        <span class="header-btn-tooltip">Καθαρισμός</span>
+                    </button>
+                    <button id="historyBtn" class="header-btn" title="Ιστορικό">
+                        <i class="fas fa-history"></i>
+                        <span class="header-btn-tooltip">Ιστορικό</span>
+                    </button>
+                </div>
+            </div>
+            <div class="progress-container">
+                <div id="progressBar" class="progress-bar"></div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Card 1: Τρέχουσα Ημερομηνία & Ώρα -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-number">1</div>
+                <div class="card-icon">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <h3 class="card-title">Τρέχουσα Ημερομηνία & Ώρα</h3>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label required">
+                    <i class="fas fa-calendar-day"></i> Στιγμή ελέγχου (πραγματική ώρα)
+                </label>
+                <div class="datetime-container">
+                    <div class="input-with-icon">
+                        <i class="fas fa-calendar-alt"></i>
+                        <input type="date" id="realDate" class="form-input" required>
+                    </div>
+                    <div class="input-with-icon">
+                        <i class="fas fa-clock"></i>
+                        <input type="time" id="realTime" class="form-input" required>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="buttons-container">
+                <button id="syncNow" class="btn btn-success">
+                    <i class="fas fa-redo-alt"></i> Συγχρονισμός με τρέχουσα ώρα
+                </button>
+            </div>
+        </div>
+
+        <!-- Card 2: Ημερομηνία & Ώρα Καταγραφικού Συστήματος -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-number">2</div>
+                <div class="card-icon">
+                    <i class="fas fa-video"></i>
+                </div>
+                <h3 class="card-title">Ημερομηνία & Ώρα Καταγραφικού Συστήματος</h3>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label required">
+                    <i class="fas fa-stopwatch"></i> Χρονική στιγμή στο καταγραφικό
+                </label>
+                <div class="datetime-container">
+                    <div class="input-with-icon">
+                        <i class="fas fa-calendar-alt"></i>
+                        <input type="date" id="recordDate" class="form-input" required>
+                    </div>
+                    <div class="input-with-icon">
+                        <i class="fas fa-clock"></i>
+                        <input type="time" id="recordTime" class="form-input" required>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 3: Επιθυμητό Χρονικό Διάστημα -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-number">3</div>
+                <div class="card-icon">
+                    <i class="fas fa-calendar-check"></i>
+                </div>
+                <h3 class="card-title">Επιθυμητό Χρονικό Διάστημα</h3>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label required">
+                    <i class="fas fa-play-circle"></i> Έναρξη (πραγματική ώρα)
+                </label>
+                <div class="datetime-container">
+                    <div class="input-with-icon">
+                        <i class="fas fa-calendar-alt"></i>
+                        <input type="date" id="desiredStartDate" class="form-input" required>
+                    </div>
+                    <div class="input-with-icon">
+                        <i class="fas fa-hourglass-start"></i>
+                        <input type="time" id="desiredStartTime" class="form-input" required>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label required">
+                    <i class="fas fa-stop-circle"></i> Λήξη (πραγματική ώρα)
+                </label>
+                <div class="datetime-container">
+                    <div class="input-with-icon">
+                        <i class="fas fa-calendar-alt"></i>
+                        <input type="date" id="desiredEndDate" class="form-input" required>
+                    </div>
+                    <div class="input-with-icon">
+                        <i class="fas fa-hourglass-end"></i>
+                        <input type="time" id="desiredEndTime" class="form-input" required>
+                    </div>
+                </div>
+                <div id="dateError" class="error-message hidden">
+                    <i class="fas fa-exclamation-circle"></i> Η ημερομηνία λήξης πρέπει να είναι μετά την έναρξη
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 4: Τοποθεσία -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-number">4</div>
+                <div class="card-icon">
+                    <i class="fas fa-map-marker-alt"></i>
+                </div>
+                <h3 class="card-title">Τοποθεσία</h3>
+            </div>
+            
+            <div class="location-permission-info">
+                <p><strong><i class="fas fa-info-circle"></i> Οδηγίες για πρόσβαση στην τοποθεσία:</strong></p>
+                <div class="permission-steps">
+                    <div class="permission-step">
+                        <i class="fas fa-mobile-alt"></i>
+                        <span>Σε κινητό: Πατήστε "Επιτρέψτε" όταν σας ζητηθεί άδεια. Σημείωση: Για καλύτερα αποτελέσματα, φορτώστε τη σελίδα μέσω HTTPS (π.χ. μέσω server, π.χ. χρησιμοποιώντας Python simple server: python -m http.server).</span>
+                    </div>
+                    <div class="permission-step">
+                        <i class="fas fa-desktop"></i>
+                        <span>Σε υπολογιστή: Επιλέξτε τοποθεσία από χάρτη. Σημείωση: Οι υπολογιστές χωρίς GPS θα πέσουν αυτόματα σε χειροκίνητη επιλογή.</span>
+                    </div>
+                    <div class="permission-step">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <span>Η τοποθεσία δεν αποθηκεύεται αυτόματα. Πατήστε "Επιβεβαίωση Τοποθεσίας" για αποθήκευση. Αν αποτύχει ο εντοπισμός, δοκιμάστε ξανά ή χρησιμοποιήστε χάρτη.</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="buttons-container">
+                <button id="getLocation" class="btn btn-primary">
+                    <i class="fas fa-location-arrow"></i> Τρέχουσα Τοποθεσία
+                </button>
+                <button id="showMap" class="btn btn-secondary">
+                    <i class="fas fa-map"></i> Επιλογή από Χάρτη
+                </button>
+            </div>
+            
+            <div id="locationDisplay" class="location-display hidden">
+                <div class="location-info">
+                    <i class="fas fa-map-pin location-icon"></i>
+                    <div class="location-details">
+                        <div id="locationName" class="location-name">Φόρτωση τοποθεσίας...</div>
+                        <div id="locationCoords" class="location-coords"></div>
+                    </div>
+                </div>
+                <div class="buttons-container mt-1">
+                    <button id="confirmLocation" class="btn btn-success">
+                        <i class="fas fa-check"></i> Επιβεβαίωση Τοποθεσίας
+                    </button>
+                    <button id="clearLocation" class="btn btn-secondary">
+                        <i class="fas fa-times"></i> Καθαρισμός
+                    </button>
+                </div>
+            </div>
+            
+            <div id="mapContainer" class="map-container hidden"></div>
+        </div>
+
+        <!-- Card 5: Αποτελέσματα -->
+        <div class="card results-container">
+            <div class="card-header">
+                <div class="card-number">5</div>
+                <div class="card-icon">
+                    <i class="fas fa-calculator"></i>
+                </div>
+                <h3 class="card-title">Αποτελέσματα Υπολογισμού</h3>
+            </div>
+            
+            <div id="resultsContent">
+                <div class="text-center mt-2 mb-2">
+                    <i class="fas fa-calculator fa-3x" style="color: #ccc;"></i>
+                    <p>Πατήστε "Υπολογισμός" για να δείτε τα αποτελέσματα.</p>
+                </div>
+            </div>
+            
+            <div class="buttons-container mt-2">
+                <button id="calculateBtn" class="btn btn-primary">
+                    <i class="fas fa-calculator"></i> Υπολογισμός
+                </button>
+                <button id="clearResultsBtn" class="btn btn-secondary">
+                    <i class="fas fa-eraser"></i> Καθαρισμός Αποτελεσμάτων
+                </button>
+            </div>
+        </div>
+
+        <!-- Card 6: Ενέργειες -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-number">6</div>
+                <div class="card-icon">
+                    <i class="fas fa-download"></i>
+                </div>
+                <h3 class="card-title">Ενέργειες & Εξαγωγή</h3>
+            </div>
+            
+            <div class="buttons-container">
+                <button id="exportBtn" class="btn btn-primary">
+                    <i class="fas fa-file-export"></i> Εξαγωγή
+                </button>
+                <button id="emailBtn" class="btn btn-secondary">
+                    <i class="fas fa-envelope"></i> Αποστολή
+                </button>
+                <button id="printBtn" class="btn btn-secondary">
+                    <i class="fas fa-print"></i> Εκτύπωση
+                </button>
+                <button id="qrcodeBtn" class="btn btn-success">
+                    <i class="fas fa-qrcode"></i> QR Code
+                </button>
+            </div>
+            
+            <div id="qrcodeContainer" class="qrcode-container hidden">
+                <h4><i class="fas fa-qrcode"></i> QR Code για γρήγορη κοινοποίηση</h4>
+                <div id="qrcode"></div>
+                <div class="qrcode-text" id="qrcodeText"></div>
+                <p class="result-note mt-1">Σκανάρετε με το κινητό σας ή κοινοποιήστε το κείμενο. Σημείωση: Το QR περιέχει τα βασικά αποτελέσματα για γρήγορη ανάγνωση.</p>
+                <div class="buttons-container mt-1">
+                    <button id="downloadQR" class="btn btn-secondary">
+                        <i class="fas fa-download"></i> Λήψη QR Code
+                    </button>
+                    <button id="copyQRText" class="btn btn-secondary">
+                        <i class="fas fa-copy"></i> Αντιγραφή κειμένου
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>Εργαλείο ανάπτυξης για εσωτερική χρήση | Έκδοση 2.0 | Ενημερώθηκε: Δεκέμβριος 2025</p>
+            <p>© <span id="currentYear"></span> Υ.Δ.Ε.Ε. Κατερίνης - Με επιφύλαξη παντός δικαιώματος</p>
+        </footer>
+    </div>
+
+    <!-- History Modal -->
+    <div id="historyModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title"><i class="fas fa-history"></i> Ιστορικό Υπολογισμών</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            
+            <div id="historyList" class="history-panel">
+                <p class="text-center">Δεν υπάρχει ιστορικό ακόμα</p>
+            </div>
+            
+            <div class="buttons-container mt-2">
+                <button id="clearHistory" class="btn btn-danger">
+                    <i class="fas fa-trash"></i> Καθαρισμός Ιστορικού
+                </button>
+                <button id="closeHistory" class="btn btn-secondary">Κλείσιμο</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Export Modal -->
+    <div id="exportModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title"><i class="fas fa-file-export"></i> Εξαγωγή Αποτελεσμάτων</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            
+            <div class="export-options">
+                <button id="exportTxt" class="btn btn-secondary">
+                    <i class="fas fa-file-alt"></i> Αρχείο TXT
+                </button>
+                
+                <button id="exportPrintPdf" class="btn btn-secondary">
+                    <i class="fas fa-file-pdf"></i> Εκτύπωση ως PDF
+                </button>
+                
+                <button id="exportJson" class="btn btn-secondary">
+                    <i class="fas fa-code"></i> Αρχείο JSON
+                </button>
+            </div>
+            
+            <div class="mt-2">
+                <label class="form-label">
+                    <i class="fas fa-sticky-note"></i> Περιγραφή / Σημειώσεις
+                </label>
+                <textarea id="exportNotes" class="form-input" rows="3" 
+                          placeholder="Προσθέστε σημειώσεις σχετικά με το υλικό, τον σκοπό της ανάκτησης κλπ..."></textarea>
+            </div>
+            
+            <div class="buttons-container mt-2">
+                <button id="confirmExport" class="btn btn-primary" data-format="txt">
+                    <i class="fas fa-download"></i> Εξαγωγή TXT
+                </button>
+                <button id="cancelExport" class="btn btn-secondary">Ακύρωση</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <!-- QRCode.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+    <script>
+        // ====================
+        // Global Variables
+        // ====================
+        let map = null;
+        let currentMarker = null;
+        let currentLocation = null;
+        let calculationHistory = [];
+        let calculationPerformed = false;
+        let currentResults = null;
+        let isLocationConfirmed = false;
+
+        // ====================
+        // DOM Elements
+        // ====================
+        const realDate = document.getElementById('realDate');
+        const realTime = document.getElementById('realTime');
+        const recordDate = document.getElementById('recordDate');
+        const recordTime = document.getElementById('recordTime');
+        const desiredStartDate = document.getElementById('desiredStartDate');
+        const desiredStartTime = document.getElementById('desiredStartTime');
+        const desiredEndDate = document.getElementById('desiredEndDate');
+        const desiredEndTime = document.getElementById('desiredEndTime');
+        const dateError = document.getElementById('dateError');
+        
+        const calculateBtn = document.getElementById('calculateBtn');
+        const exportBtn = document.getElementById('exportBtn');
+        const clearHeaderBtn = document.getElementById('clearHeaderBtn');
+        const clearResultsBtn = document.getElementById('clearResultsBtn');
+        const syncNow = document.getElementById('syncNow');
+        const getLocation = document.getElementById('getLocation');
+        const showMap = document.getElementById('showMap');
+        const confirmLocation = document.getElementById('confirmLocation');
+        const clearLocation = document.getElementById('clearLocation');
+        const themeToggle = document.getElementById('themeToggle');
+        const historyBtn = document.getElementById('historyBtn');
+        const printBtn = document.getElementById('printBtn');
+        const emailBtn = document.getElementById('emailBtn');
+        const qrcodeBtn = document.getElementById('qrcodeBtn');
+        const downloadQR = document.getElementById('downloadQR');
+        const copyQRText = document.getElementById('copyQRText');
+        
+        const locationDisplay = document.getElementById('locationDisplay');
+        const locationName = document.getElementById('locationName');
+        const locationCoords = document.getElementById('locationCoords');
+        const mapContainer = document.getElementById('mapContainer');
+        const resultsContent = document.getElementById('resultsContent');
+        const qrcodeContainer = document.getElementById('qrcodeContainer');
+        const qrcodeElement = document.getElementById('qrcode');
+        const qrcodeTextElement = document.getElementById('qrcodeText');
+        const progressBar = document.getElementById('progressBar');
+        
+        const historyModal = document.getElementById('historyModal');
+        const exportModal = document.getElementById('exportModal');
+        const historyList = document.getElementById('historyList');
+        const closeModalBtns = document.querySelectorAll('.close-modal, #closeHistory, #cancelExport');
+        const clearHistoryBtn = document.getElementById('clearHistory');
+        const confirmExport = document.getElementById('confirmExport');
+
+        // ====================
+        // Helper Functions
+        // ====================
+        
+        /**
+         * Format date for input field (YYYY-MM-DD)
+         */
+        function formatDateForInput(date) {
+            return date.toISOString().split('T')[0];
+        }
+
+        /**
+         * Format time for input field (HH:MM)
+         */
+        function formatTimeForInput(date) {
+            return date.toTimeString().split(':').slice(0, 2).join(':');
+        }
+
+        /**
+         * Format date time in Greek locale
+         */
+        function formatDateTimeGreek(date) {
+            const options = {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: false
+            };
+            return date.toLocaleDateString('el-GR', options);
+        }
+
+        /**
+         * Format duration in Greek
+         */
+        function formatDurationGreek(ms, isDifference = true) {
+            const isNegative = ms < 0;
+            const absMs = Math.abs(ms);
+            
+            const hours = Math.floor(absMs / (1000 * 60 * 60));
+            const minutes = Math.floor((absMs % (1000 * 60 * 60)) / (1000 * 60));
+            
+            let result = '';
+            if (hours > 0) result += `${hours} ώρ${hours === 1 ? 'α' : 'ες'} `;
+            if (minutes > 0 || hours === 0) result += `${minutes} λεπτ${minutes === 1 ? 'ό' : 'ά'}`;
+            
+            if (isDifference) {
+                return isNegative ? `Για να βρούμε τον πραγματικό χρόνο, στον χρόνο του καταγραφικού προσθέτουμε ${result}` : `Για να βρούμε τον πραγματικό χρόνο, από το χρόνο του καταγραφικού αφαιρούμε ${result}`;
+            } else {
+                return result;
+            }
+        }
+
+        /**
+         * Show notification to user
+         */
+        function showNotification(message, type = 'info', duration = 5000) {
+            // Remove existing notifications
+            const existing = document.querySelectorAll('.notification');
+            existing.forEach(n => n.remove());
+            
+            // Create notification element
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            
+            // Set icon based on type
+            let icon = 'info-circle';
+            if (type === 'success') icon = 'check-circle';
+            if (type === 'error') icon = 'exclamation-circle';
+            if (type === 'warning') icon = 'exclamation-triangle';
+            
+            notification.innerHTML = `
+                <i class="fas fa-${icon}"></i>
+                <span>${message}</span>
+            `;
+            
+            // Add styles
+            Object.assign(notification.style, {
+                position: 'fixed',
+                top: '130px',
+                right: '20px',
+                padding: '12px 20px',
+                borderRadius: '8px',
+                color: 'white',
+                fontWeight: '600',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '12px',
+                zIndex: '1500',
+                boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+                animation: 'slideIn 0.3s ease',
+                maxWidth: '410px',
+                wordBreak: 'break-word',
+                backdropFilter: 'blur(10px)',
+                backgroundColor: type === 'success' ? 'rgba(40, 167, 69, 0.9)' : 
+                               type === 'error' ? 'rgba(220, 53, 69, 0.9)' : 
+                               type === 'warning' ? 'rgba(255, 193, 7, 0.9)' : 
+                               'rgba(23, 162, 184, 0.9)'
+            });
+            
+            // Add to DOM
+            document.body.appendChild(notification);
+            
+            // Auto-remove
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => {
+                    if (notification.parentNode) {
+                        notification.parentNode.removeChild(notification);
+                    }
+                }, 300);
+            }, duration);
+            
+            // Add animation styles if not already added
+            if (!document.querySelector('#notification-styles')) {
+                const style = document.createElement('style');
+                style.id = 'notification-styles';
+                style.textContent = `
+                    @keyframes slideIn {
+                        from { transform: translateX(100%); opacity: 0; }
+                        to { transform: translateX(0); opacity: 1; }
+                    }
+                    @keyframes slideOut {
+                        from { transform: translateX(0); opacity: 1; }
+                        to { transform: translateX(100%); opacity: 0; }
+                    }
+                `;
+                document.head.appendChild(style);
+            }
+        }
+
+        /**
+         * Update progress bar based on form completion
+         */
+        function updateProgress() {
+            let progress = 0;
+            const totalFields = 9; // 8 datetime fields + location
+            
+            // Check datetime fields
+            const datetimeFields = [
+                realDate, realTime, recordDate, recordTime,
+                desiredStartDate, desiredStartTime, desiredEndDate, desiredEndTime
+            ];
+            
+            const filledDatetimeFields = datetimeFields.filter(field => field.value.trim()).length;
+            progress += (filledDatetimeFields / 8) * 80;
+            
+            // Check location (only if confirmed)
+            if (isLocationConfirmed && currentLocation) {
+                progress += 20;
+            }
+            
+            // Update progress bar
+            progressBar.style.width = `${progress}%`;
+        }
+
+        /**
+         * Validate form inputs
+         */
+        function validateForm() {
+            // Check required fields
+            const requiredFields = [
+                realDate, realTime, recordDate, recordTime,
+                desiredStartDate, desiredStartTime, desiredEndDate, desiredEndTime
+            ];
+            
+            for (let field of requiredFields) {
+                if (!field.value.trim()) {
+                    showNotification('Συμπληρώστε όλα τα υποχρεωτικά πεδία', 'error');
+                    field.classList.add('error');
+                    field.focus();
+                    return false;
+                }
+                field.classList.remove('error');
+            }
+            
+            // Validate dates
+            const startDateTime = new Date(`${desiredStartDate.value}T${desiredStartTime.value}`);
+            const endDateTime = new Date(`${desiredEndDate.value}T${desiredEndTime.value}`);
+            
+            if (isNaN(startDateTime.getTime()) || isNaN(endDateTime.getTime())) {
+                showNotification('Μη έγκυρες ημερομηνίες', 'error');
+                dateError.classList.remove('hidden');
+                return false;
+            }
+            
+            if (endDateTime <= startDateTime) {
+                showNotification('Η ημερομηνία λήξης πρέπει να είναι μετά την έναρξη', 'error');
+                dateError.classList.remove('hidden');
+                desiredEndDate.focus();
+                return false;
+            }
+            
+            dateError.classList.add('hidden');
+            return true;
+        }
+
+        /**
+         * Reverse geocode coordinates to address
+         */
+        async function reverseGeocode(lat, lng) {
+            try {
+                const response = await fetch(
+                    `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=16&addressdetails=1`,
+                    {
+                        headers: {
+                            'User-Agent': 'TimeSyncTool/6.0',
+                            'Accept-Language': 'el-GR,el;q=0.9'
+                        }
+                    }
+                );
+                
+                if (!response.ok) throw new Error('Geocoding failed');
+                
+                const data = await response.json();
+                
+                if (data.display_name) {
+                    // Try to get a meaningful address
+                    const parts = data.display_name.split(',');
+                    if (parts.length >= 3) {
+                        return parts.slice(0, 3).join(', ').trim();
+                    }
+                    return data.display_name;
+                }
+                
+                return `Συντεταγμένες: ${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+            } catch (error) {
+                console.warn('Geocoding error:', error);
+                return `Συντεταγμένες: ${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+            }
+        }
+
+        // ====================
+        // Core Functionality
+        // ====================
+        
+        /**
+         * Initialize the application
+         */
+        function initApp() {
+            // Set current year in footer
+            document.getElementById('currentYear').textContent = new Date().getFullYear();
+            
+            // Setup date/time defaults
+            setupDateTimeDefaults();
+            
+            // Load theme preference
+            loadTheme();
+            
+            // Setup event listeners
+            setupEventListeners();
+            
+            // Clear any saved location (as requested)
+            clearCurrentLocation();
+            
+            // Update progress bar
+            updateProgress();
+            
+            // Show welcome message
+            setTimeout(() => {
+                showNotification('Καλώς ορίσατε στο Εργαλείο Υπολογισμού Διαφοράς Χρόνου Καταγραφικών-Έκδοση 2.0<br><br>Με επιλογή προσθήκης τοποθεσίας και υποστήριξη πολλαπλών μεθόδων εξαγωγής', 'info', 3000);
+            }, 1000);
+
+            // Load history
+            loadHistory();
+        }
+
+        /**
+         * Set up date/time defaults
+         */
+        function setupDateTimeDefaults() {
+            const now = new Date();
+            const today = formatDateForInput(now);
+            const time = formatTimeForInput(now);
+            
+            // Set current date/time
+            realDate.value = today;
+            realTime.value = time;
+            recordDate.value = today;
+            recordTime.value = time;
+            
+            // Set desired start to now
+            desiredStartDate.value = today;
+            desiredStartTime.value = time;
+            
+            // Set desired end to 1 hour from now
+            const oneHourLater = new Date(now.getTime() + 60 * 60 * 1000);
+            desiredEndDate.value = formatDateForInput(oneHourLater);
+            desiredEndTime.value = formatTimeForInput(oneHourLater);
+            
+            // Set min/max dates
+            const dateInputs = document.querySelectorAll('input[type="date"]');
+            const currentYear = new Date().getFullYear();
+            dateInputs.forEach(input => {
+                input.min = `${currentYear - 5}-01-01`;
+                input.max = `${currentYear + 5}-12-31`;
+            });
+        }
+
+        /**
+         * Set up all event listeners
+         */
+        function setupEventListeners() {
+            // Form inputs validation
+            [desiredStartDate, desiredStartTime, desiredEndDate, desiredEndTime].forEach(input => {
+                input.addEventListener('change', validateDateRange);
+                input.addEventListener('input', validateDateRange);
+            });
+            
+            // Header buttons
+            calculateBtn.addEventListener('click', calculateDifference);
+            clearHeaderBtn.addEventListener('click', confirmClearAllData);
+            clearResultsBtn.addEventListener('click', clearResults);
+            syncNow.addEventListener('click', syncWithCurrentTime);
+            
+            // Location buttons
+            getLocation.addEventListener('click', getCurrentLocation);
+            showMap.addEventListener('click', showMapModal);
+            confirmLocation.addEventListener('click', confirmSelectedLocation);
+            clearLocation.addEventListener('click', clearCurrentLocation);
+            
+            // Export/Email buttons
+            exportBtn.addEventListener('click', showExportModal);
+            emailBtn.addEventListener('click', sendEmailWithAttachment);
+            printBtn.addEventListener('click', handlePrint);
+            qrcodeBtn.addEventListener('click', generateQRCode);
+            downloadQR.addEventListener('click', downloadQRCode);
+            copyQRText.addEventListener('click', copyQRCodeText);
+            
+            // Theme & History
+            themeToggle.addEventListener('click', toggleTheme);
+            historyBtn.addEventListener('click', showHistoryModal);
+            clearHistoryBtn.addEventListener('click', clearHistory);
+            
+            // Export options
+            document.getElementById('exportTxt').addEventListener('click', () => setExportFormat('txt'));
+            document.getElementById('exportPrintPdf').addEventListener('click', () => setExportFormat('printpdf'));
+            document.getElementById('exportJson').addEventListener('click', () => setExportFormat('json'));
+            confirmExport.addEventListener('click', handleExport);
+            
+            // Modal controls
+            closeModalBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    historyModal.style.display = 'none';
+                    exportModal.style.display = 'none';
+                });
+            });
+            
+            // Close modals when clicking outside
+            [historyModal, exportModal].forEach(modal => {
+                modal.addEventListener('click', (e) => {
+                    if (e.target === modal) {
+                        modal.style.display = 'none';
+                    }
+                });
+            });
+            
+            // Keyboard shortcuts
+            document.addEventListener('keydown', handleKeyboardShortcuts);
+            
+            // Update progress on input change
+            document.querySelectorAll('input, textarea').forEach(input => {
+                input.addEventListener('change', updateProgress);
+                input.addEventListener('input', updateProgress);
+            });
+        }
+
+        /**
+         * Handle keyboard shortcuts
+         */
+        function handleKeyboardShortcuts(e) {
+            // Ctrl/Cmd + Enter: Calculate
+            if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+                e.preventDefault();
+                calculateDifference();
+            }
+            
+            // Escape: Close modals
+            if (e.key === 'Escape') {
+                historyModal.style.display = 'none';
+                exportModal.style.display = 'none';
+                mapContainer.classList.add('hidden');
+            }
+            
+            // Ctrl/Cmd + P: Print
+            if ((e.ctrlKey || e.metaKey) && e.key === 'p') {
+                e.preventDefault();
+                handlePrint();
+            }
+            
+            // Ctrl/Cmd + S: Save (Export TXT)
+            if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+                e.preventDefault();
+                if (calculationPerformed) {
+                    exportToTxt();
+                }
+            }
+        }
+
+        /**
+         * Validate date range
+         */
+        function validateDateRange() {
+            if (desiredStartDate.value && desiredStartTime.value && 
+                desiredEndDate.value && desiredEndTime.value) {
+                
+                const start = new Date(`${desiredStartDate.value}T${desiredStartTime.value}`);
+                const end = new Date(`${desiredEndDate.value}T${desiredEndTime.value}`);
+                
+                if (end <= start) {
+                    dateError.classList.remove('hidden');
+                } else {
+                    dateError.classList.add('hidden');
+                }
+            }
+        }
+
+        // ====================
+        // Location Functions
+        // ====================
+        
+        /**
+         * Get current location with improved permission handling
+         */
+        async function getCurrentLocation() {
+            // Check if geolocation is supported
+            if (!navigator.geolocation) {
+                showNotification('Ο browser σας δεν υποστηρίζει ανίχνευση τοποθεσίας. Δοκιμάστε χειροκίνητη επιλογή από χάρτη.', 'error');
+                showMapModal();
+                return;
+            }
+            
+            getLocation.innerHTML = '<span class="loading"></span>';
+            getLocation.disabled = true;
+            
+            try {
+                // Try to get position with timeout
+                const position = await new Promise((resolve, reject) => {
+                    navigator.geolocation.getCurrentPosition(resolve, reject, {
+                        enableHighAccuracy: true,
+                        timeout: 15000,
+                        maximumAge: 0
+                    });
+                });
+                
+                const { latitude, longitude } = position.coords;
+                currentLocation = { latitude, longitude };
+                
+                // Get location name
+                const locationNameText = await reverseGeocode(latitude, longitude);
+                displayLocation(locationNameText, latitude, longitude);
+                
+                showNotification('Τοποθεσία εντοπίστηκε επιτυχώς', 'success');
+                
+            } catch (error) {
+                handleLocationError(error);
+            } finally {
+                getLocation.innerHTML = '<i class="fas fa-location-arrow"></i>';
+                getLocation.disabled = false;
+            }
+        }
+
+        /**
+         * Handle location errors
+         */
+        function handleLocationError(error) {
+            let message = 'Αδυναμία ανίχνευσης τοποθεσίας. ';
+            
+            switch(error.code) {
+                case error.PERMISSION_DENIED:
+                    message += 'Δεν δόθηκε άδεια πρόσβασης. Παρακαλώ επιτρέψτε την πρόσβαση στις ρυθμίσεις του browser και δοκιμάστε ξανά.';
+                    break;
+                case error.POSITION_UNAVAILABLE:
+                    message += 'Η πληροφορία τοποθεσίας δεν είναι διαθέσιμη. Βεβαιωθείτε ότι η συσκευή έχει GPS ή δοκιμάστε σε HTTPS.';
+                    break;
+                case error.TIMEOUT:
+                    message += 'Το αίτημα τοποθεσίας έληξε. Δοκιμάστε ξανά σε καλύτερο σήμα.';
+                    break;
+                default:
+                    message += 'Άγνωστο σφάλμα. Βεβαιωθείτε ότι η σελίδα φορτώνεται μέσω HTTPS.';
+            }
+            
+            showNotification(message, 'error', 6000);
+            
+            // Suggest manual selection
+            setTimeout(() => {
+                if (confirm('Δεν ήταν δυνατή η ανίχνευση της τοποθεσίας σας. Θέλετε να επιλέξετε χειροκίνητα από χάρτη;')) {
+                    showMapModal();
+                }
+            }, 1000);
+        }
+
+        /**
+         * Display location information
+         */
+        function displayLocation(name, lat, lng) {
+            locationName.textContent = name;
+            locationCoords.textContent = `Συντεταγμένες: ${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+            locationDisplay.classList.remove('hidden');
+            isLocationConfirmed = false;
+            updateProgress();
+        }
+
+        /**
+         * Show map for manual location selection
+         */
+        function showMapModal() {
+            mapContainer.classList.remove('hidden');
+            mapContainer.style.display = 'block';
+            
+            if (!map) {
+                // Initialize map with Greece center
+                map = L.map('mapContainer', {
+                    zoomControl: true,
+                    attributionControl: true
+                }).setView([40.2696, 22.5029], 13);
+                
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '© OpenStreetMap contributors',
+                    maxZoom: 19
+                }).addTo(map);
+                
+                // Add click handler with improved UX
+                map.on('click', async (e) => {
+                    if (currentMarker) {
+                        map.removeLayer(currentMarker);
+                    }
+                    
+                    currentMarker = L.marker(e.latlng).addTo(map)
+                        .bindPopup('Επιλεγμένη τοποθεσία')
+                        .openPopup();
+                    
+                    currentLocation = {
+                        latitude: e.latlng.lat,
+                        longitude: e.latlng.lng
+                    };
+                    
+                    // Get location name
+                    const locationNameText = await reverseGeocode(e.latlng.lat, e.latlng.lng);
+                    displayLocation(locationNameText, e.latlng.lat, e.latlng.lng);
+                    showNotification('Επιλέξατε νέα τοποθεσία από τον χάρτη', 'success');
+                });
+            } else {
+                map.invalidateSize();
+            }
+            
+            // Center map on current location if available
+            if (currentLocation) {
+                map.setView([currentLocation.latitude, currentLocation.longitude], 13);
+                if (!currentMarker) {
+                    currentMarker = L.marker([currentLocation.latitude, currentLocation.longitude])
+                        .addTo(map)
+                        .bindPopup('Τρέχουσα τοποθεσία')
+                        .openPopup();
+                }
+            } else {
+                map.setView([40.2696, 22.5029], 13);
+            }
+            
+            // Force resize after short delay for better rendering
+            setTimeout(() => {
+                map.invalidateSize();
+            }, 100);
+        }
+
+        /**
+         * Confirm selected location
+         */
+        function confirmSelectedLocation() {
+            if (currentLocation) {
+                isLocationConfirmed = true;
+                showNotification('Τοποθεσία επιβεβαιώθηκε και αποθηκεύτηκε', 'success');
+                mapContainer.classList.add('hidden');
+                mapContainer.style.display = 'none';
+                updateProgress();
+            } else {
+                showNotification('Δεν έχετε επιλέξει τοποθεσία. Κάντε click στον χάρτη για επιλογή.', 'error');
+            }
+        }
+
+        /**
+         * Clear current location
+         */
+        function clearCurrentLocation() {
+            currentLocation = null;
+            isLocationConfirmed = false;
+            locationDisplay.classList.add('hidden');
+            if (map && currentMarker) {
+                map.removeLayer(currentMarker);
+                currentMarker = null;
+            }
+            showNotification('Τοποθεσία διαγράφηκε', 'info');
+            updateProgress();
+        }
+
+        // ====================
+        // Calculation Functions
+        // ====================
+        
+        /**
+         * Calculate time difference
+         */
+        function calculateDifference() {
+            if (!validateForm()) return;
+            
+            calculateBtn.innerHTML = '<span class="loading"></span> Υπολογισμός...';
+            calculateBtn.disabled = true;
+            
+            // Use setTimeout to allow UI to update
+            setTimeout(async () => {
+                try {
+                    // Parse input values
+                    const realDateTime = new Date(`${realDate.value}T${realTime.value}`);
+                    const recordDateTime = new Date(`${recordDate.value}T${recordTime.value}`);
+                    const desiredStartDateTime = new Date(`${desiredStartDate.value}T${desiredStartTime.value}`);
+                    const desiredEndDateTime = new Date(`${desiredEndDate.value}T${desiredEndTime.value}`);
+                    
+                    // Validate dates
+                    if (isNaN(realDateTime.getTime()) || isNaN(recordDateTime.getTime()) || 
+                        isNaN(desiredStartDateTime.getTime()) || isNaN(desiredEndDateTime.getTime())) {
+                        throw new Error('Μη έγκυρες ημερομηνίες');
+                    }
+                    
+                    // Calculate differences
+                    const differenceRealAndRecord = recordDateTime - realDateTime;
+                    const desiredDuration = desiredEndDateTime - desiredStartDateTime;
+                    
+                    // Calculate adjusted times
+                    const resultStartDateTime = new Date(desiredStartDateTime.getTime() + differenceRealAndRecord);
+                    const resultEndDateTime = new Date(desiredEndDateTime.getTime() + differenceRealAndRecord);
+                    
+                    // Store results
+                    currentResults = {
+                        timeDifference: differenceRealAndRecord,
+                        calculatedStart: resultStartDateTime,
+                        calculatedEnd: resultEndDateTime,
+                        duration: desiredDuration,
+                        realDateTime: realDateTime,
+                        recordDateTime: recordDateTime,
+                        desiredStartDateTime: desiredStartDateTime,
+                        desiredEndDateTime: desiredEndDateTime,
+                        timestamp: new Date(),
+                        location: currentLocation,
+                        isLocationConfirmed: isLocationConfirmed,
+                        realDate: realDate.value,
+                        realTime: realTime.value,
+                        recordDate: recordDate.value,
+                        recordTime: recordTime.value,
+                        desiredStartDate: desiredStartDate.value,
+                        desiredStartTime: desiredStartTime.value,
+                        desiredEndDate: desiredEndDate.value,
+                        desiredEndTime: desiredEndTime.value
+                    };
+                    
+                    // Update UI
+                    updateResultsUI();
+                    
+                    // Add to history
+                    addToHistory(currentResults);
+                    
+                    calculationPerformed = true;
+                    exportBtn.disabled = false;
+                    emailBtn.disabled = false;
+                    qrcodeBtn.disabled = false;
+                    
+                    showNotification('Υπολογισμός ολοκληρώθηκε επιτυχώς', 'success');
+                    updateProgress();
+                    
+                } catch (error) {
+                    console.error('Calculation error:', error);
+                    showNotification('Σφάλμα υπολογισμού: ' + error.message, 'error');
+                } finally {
+                    calculateBtn.innerHTML = '<i class="fas fa-calculator"></i> Υπολογισμός';
+                    calculateBtn.disabled = false;
+                }
+            }, 300);
+        }
+
+        /**
+         * Update results UI
+         */
+        function updateResultsUI() {
+            if (!currentResults) return;
+            
+            const startTime = formatDateTimeGreek(currentResults.calculatedStart);
+            const endTime = formatDateTimeGreek(currentResults.calculatedEnd);
+            const timeDiff = formatDurationGreek(currentResults.timeDifference, true);
+            const duration = formatDurationGreek(currentResults.duration, false);
+            
+            let locationInfo = '<div class="result-note"><i class="fas fa-map-marker-alt"></i> Δεν έχει καταγραφεί τοποθεσία</div>';
+            if (currentResults.location && currentResults.isLocationConfirmed) {
+                locationInfo = `<div class="result-note"><i class="fas fa-map-marker-alt"></i> Τοποθεσία: ${locationName.textContent}</div>`;
+            }
+            
+            resultsContent.innerHTML = `
+                <div class="result-item">
+                    <div class="result-label">
+                        <i class="fas fa-info-circle"></i> Χρονική διαφορά καταγραφικού συστήματος
+                    </div>
+                    <div class="result-value">${timeDiff}</div>
+                    <div class="result-note">
+                        Διαφορά μεταξύ πραγματικής ώρας και ώρας καταγραφικού συστήματος
+                    </div>
+                </div>
+                
+                <div class="result-item">
+                    <div class="result-label">
+                        <i class="fas fa-cogs"></i> Ρυθμίσεις καταγραφικού
+                    </div>
+                    <div class="location-display mt-1">
+                        <div class="result-label">
+                            <i class="fas fa-play"></i> Έναρξη
+                        </div>
+                        <div class="result-value">${startTime}</div>
+                        
+                        <div class="result-label mt-1">
+                            <i class="fas fa-stop"></i> Λήξη
+                        </div>
+                        <div class="result-value">${endTime}</div>
+                    </div>
+                    ${locationInfo}
+                    <div class="result-note mt-1">
+                        <i class="fas fa-exclamation-triangle"></i> Ρυθμίστε το καταγραφικό σύστημα με τις παραπάνω ημερομηνίες για να λάβετε το επιθυμητό υλικό.
+                    </div>
+                </div>
+               
+                <div class="result-item">
+                    <div class="result-label">
+                        <i class="fas fa-history"></i> Διάρκεια υλικού
+                    </div>
+                    <div class="result-value">${duration}</div>
+                    <div class="result-note">
+                        Συνολική διάρκεια του ζητούμενου υλικού
+                    </div>
+                </div>
+            `;
+        }
+
+
+        // ====================
+        // Utility Functions
+        // ====================
+        
+        /**
+         * Sync with current time
+         */
+        function syncWithCurrentTime() {
+            const now = new Date();
+            realDate.value = formatDateForInput(now);
+            realTime.value = formatTimeForInput(now);
+            
+            showNotification('Συγχρονίστηκε με τρέχουσα ώρα', 'success');
+            updateProgress();
+        }
+
+        /**
+         * Clear all data with confirmation
+         */
+        function confirmClearAllData() {
+            if (confirm('Θέλετε να διαγράψετε όλα τα δεδομένα της φόρμας;\n\n• Όλες οι ημερομηνίες\n• Η τοποθεσία\n• Τα αποτελέσματα\n• Ο QR Code')) {
+                clearAllData();
+            }
+        }
+
+        /**
+         * Clear all data
+         */
+        function clearAllData() {
+            // Clear form inputs
+            const inputs = document.querySelectorAll('input[type="text"], input[type="date"], input[type="time"], textarea');
+            inputs.forEach(input => {
+                if (input.id !== 'exportNotes') {
+                    input.value = '';
+                    input.classList.remove('error');
+                }
+            });
+            
+            // Clear location
+            clearCurrentLocation();
+            
+            // Clear results
+            clearResults();
+            
+            // Reset to defaults
+            setupDateTimeDefaults();
+            
+            // Hide QR code
+            qrcodeContainer.classList.add('hidden');
+            
+            // Disable export buttons
+            calculationPerformed = false;
+            exportBtn.disabled = true;
+            emailBtn.disabled = true;
+            qrcodeBtn.disabled = true;
+            
+            updateProgress();
+            showNotification('Όλα τα δεδομένα διαγράφηκαν', 'info');
+        }
+
+        /**
+         * Clear results only
+         */
+        function clearResults() {
+            currentResults = null;
+            calculationPerformed = false;
+            
+            resultsContent.innerHTML = `
+                <div class="text-center mt-2 mb-2">
+                    <i class="fas fa-calculator fa-3x" style="color: #ccc;"></i>
+                    <p>Πατήστε "Υπολογισμός" για να δείτε τα αποτελέσματα.</p>
+                </div>
+            `;
+            
+            qrcodeContainer.classList.add('hidden');
+            
+            exportBtn.disabled = true;
+            emailBtn.disabled = true;
+            qrcodeBtn.disabled = true;
+            
+            showNotification('Τα αποτελέσματα διαγράφηκαν', 'info');
+        }
+
+        /**
+         * Toggle dark/light theme
+         */
+        function toggleTheme() {
+            document.body.classList.toggle('dark-mode');
+            const icon = themeToggle.querySelector('i');
+            
+            if (document.body.classList.contains('dark-mode')) {
+                icon.className = 'fas fa-sun';
+                localStorage.setItem('theme', 'dark');
+                showNotification('Ενεργοποιήθηκε το σκοτεινό θέμα', 'info', 2000);
+            } else {
+                icon.className = 'fas fa-moon';
+                localStorage.setItem('theme', 'light');
+                showNotification('Ενεργοποιήθηκε το φωτεινό θέμα', 'info', 2000);
+            }
+        }
+
+        /**
+         * Load saved theme
+         */
+        function loadTheme() {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            if (savedTheme === 'dark') {
+                document.body.classList.add('dark-mode');
+                themeToggle.querySelector('i').className = 'fas fa-sun';
+            }
+        }
+
+        // ====================
+        // History Functions
+        // ====================
+        
+        /**
+         * Add calculation to history
+         */
+        function addToHistory(results) {
+            const historyItem = {
+                id: Date.now(),
+                timestamp: results.timestamp,
+                calculatedStart: results.calculatedStart,
+                calculatedEnd: results.calculatedEnd,
+                timeDifference: results.timeDifference,
+                duration: results.duration,
+                location: results.location,
+                isLocationConfirmed: results.isLocationConfirmed,
+                // Store all form data
+                realDate: results.realDate,
+                realTime: results.realTime,
+                recordDate: results.recordDate,
+                recordTime: results.recordTime,
+                desiredStartDate: results.desiredStartDate,
+                desiredStartTime: results.desiredStartTime,
+                desiredEndDate: results.desiredEndDate,
+                desiredEndTime: results.desiredEndTime
+            };
+            
+            calculationHistory.unshift(historyItem);
+            if (calculationHistory.length > 50) {
+                calculationHistory = calculationHistory.slice(0, 50);
+            }
+            
+            saveHistory();
+            updateHistoryUI();
+        }
+
+        /**
+         * Show history modal
+         */
+        function showHistoryModal() {
+            updateHistoryUI();
+            historyModal.style.display = 'flex';
+        }
+
+        /**
+         * Update history UI
+         */
+        function updateHistoryUI() {
+            if (calculationHistory.length === 0) {
+                historyList.innerHTML = `
+                    <div class="text-center" style="padding: 2rem;">
+                        <i class="fas fa-history fa-3x" style="color: #ccc; margin-bottom: 1rem;"></i>
+                        <p>Δεν υπάρχει ιστορικό ακόμα</p>
+                        <p class="result-note">Οι υπολογισμοί σας θα εμφανίζονται εδώ</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            historyList.innerHTML = calculationHistory.map(item => `
+                <div class="history-item" data-id="${item.id}">
+                    <div class="history-time">
+                        <i class="fas fa-calendar-alt"></i> ${formatDateTimeGreek(new Date(item.timestamp))}
+                    </div>
+                    <div class="history-details">
+                        <i class="fas fa-play"></i> Έναρξη: ${formatDateTimeGreek(new Date(item.calculatedStart))}<br>
+                        <i class="fas fa-stop"></i> Λήξη: ${formatDateTimeGreek(new Date(item.calculatedEnd))}
+                    </div>
+                </div>
+            `).join('');
+            
+            // Add click events
+            document.querySelectorAll('.history-item').forEach(item => {
+                item.addEventListener('click', (e) => {
+                    const id = parseInt(item.dataset.id);
+                    loadFromHistory(id);
+                });
+            });
+        }
+
+        /**
+         * Load data from history
+         */
+        function loadFromHistory(id) {
+            const item = calculationHistory.find(i => i.id === id);
+            if (item) {
+                // Load form data
+                realDate.value = item.realDate;
+                realTime.value = item.realTime;
+                recordDate.value = item.recordDate;
+                recordTime.value = item.recordTime;
+                desiredStartDate.value = item.desiredStartDate;
+                desiredStartTime.value = item.desiredStartTime;
+                desiredEndDate.value = item.desiredEndDate;
+                desiredEndTime.value = item.desiredEndTime;
+                
+                // Load location if exists and confirmed
+                if (item.location && item.isLocationConfirmed) {
+                    currentLocation = item.location;
+                    isLocationConfirmed = true;
+                    displayLocation('Αποθηκευμένη τοποθεσία', 
+                        item.location.latitude, 
+                        item.location.longitude);
+                } else {
+                    clearCurrentLocation();
+                }
+                
+                // Set current results
+                currentResults = {
+                    timeDifference: item.timeDifference,
+                    calculatedStart: new Date(item.calculatedStart),
+                    calculatedEnd: new Date(item.calculatedEnd),
+                    duration: item.duration,
+                    timestamp: item.timestamp,
+                    location: item.location,
+                    isLocationConfirmed: item.isLocationConfirmed
+                };
+                
+                // Update UI
+                updateResultsUI();
+                updateProgress();
+                
+                calculationPerformed = true;
+                exportBtn.disabled = false;
+                emailBtn.disabled = false;
+                qrcodeBtn.disabled = false;
+                
+                historyModal.style.display = 'none';
+                showNotification('Φορτώθηκαν δεδομένα από ιστορικό', 'success');
+            }
+        }
+
+        /**
+         * Clear history
+         */
+        function clearHistory() {
+            if (confirm('Θέλετε να διαγράψετε όλο το ιστορικό υπολογισμών;\n\nΑυτή η ενέργεια δεν μπορεί να αναιρεθεί.')) {
+                calculationHistory = [];
+                saveHistory();
+                updateHistoryUI();
+                showNotification('Το ιστορικό διαγράφηκε', 'info');
+            }
+        }
+
+        /**
+         * Save history to localStorage
+         */
+        function saveHistory() {
+            try {
+                // Convert dates to strings for storage
+                const historyForStorage = calculationHistory.map(item => ({
+                    ...item,
+                    timestamp: item.timestamp.toISOString(),
+                    calculatedStart: item.calculatedStart.toISOString(),
+                    calculatedEnd: item.calculatedEnd.toISOString()
+                }));
+                localStorage.setItem('timeSyncHistory', JSON.stringify(historyForStorage));
+            } catch (error) {
+                console.error('Error saving history:', error);
+            }
+        }
+
+        /**
+         * Load history from localStorage
+         */
+        function loadHistory() {
+            try {
+                const saved = localStorage.getItem('timeSyncHistory');
+                if (saved) {
+                    const parsed = JSON.parse(saved);
+                    calculationHistory = parsed.map(item => ({
+                        ...item,
+                        timestamp: new Date(item.timestamp),
+                        calculatedStart: new Date(item.calculatedStart),
+                        calculatedEnd: new Date(item.calculatedEnd)
+                    }));
+                }
+            } catch (error) {
+                console.error('Error loading history:', error);
+                calculationHistory = [];
+            }
+        }
+
+        // ====================
+        // Export Functions
+        // ====================
+        
+        /**
+         * Show export modal
+         */
+        function showExportModal() {
+            if (!calculationPerformed) {
+                showNotification('Δεν υπάρχουν αποτελέσματα για εξαγωγή', 'error');
+                return;
+            }
+            
+            exportModal.style.display = 'flex';
+        }
+
+        /**
+         * Set export format
+         */
+        function setExportFormat(format) {
+            confirmExport.dataset.format = format;
+            
+            let buttonText = 'Εξαγωγή ';
+            let icon = 'fas fa-download';
+            
+            switch(format) {
+                case 'txt':
+                    buttonText += 'TXT';
+                    icon = 'fas fa-file-alt';
+                    break;
+                case 'printpdf':
+                    buttonText += 'PDF';
+                    icon = 'fas fa-file-pdf';
+                    break;
+                case 'json':
+                    buttonText += 'JSON';
+                    icon = 'fas fa-code';
+                    break;
+            }
+            
+            confirmExport.innerHTML = `<i class="${icon}"></i> ${buttonText}`;
+        }
+
+        /**
+         * Handle export
+         */
+        function handleExport() {
+            const format = confirmExport.dataset.format || 'txt';
+            const notes = document.getElementById('exportNotes').value;
+            
+            exportModal.style.display = 'none';
+            
+            switch(format) {
+                case 'txt':
+                    exportToTxt(notes);
+                    break;
+                case 'printpdf':
+                    exportToPrintPdf(notes);
+                    break;
+                case 'json':
+                    exportToJson(notes);
+                    break;
+            }
+        }
+
+        /**
+         * Generate export content
+         */
+        function generateExportContent(notes = '') {
+            if (!currentResults) return '';
+            
+            let locationInfo = 'Δεν καταγράφηκε τοποθεσία';
+            if (currentResults.location && currentResults.isLocationConfirmed) {
+                locationInfo = `Τοποθεσία: ${locationName.textContent}\nΣυντεταγμένες: ${currentResults.location.latitude.toFixed(6)}, ${currentResults.location.longitude.toFixed(6)}`;
+            }
+            
+            return `ΥΠΟΔΙΕΥΘΥΝΣΗ ΔΙΩΞΗΣ & ΕΞΙΧΝΙΑΣΗΣ ΕΓΚΛΗΜΑΤΩΝ ΚΑΤΕΡΙΝΗΣ
+ΟΜΑΔΑ ΔΙΩΞΗΣ ΕΓΚΛΗΜΑΤΩΝ
+══════════════════════════════════════════════════
+
+ΑΝΑΦΟΡΑ ΥΠΟΛΟΓΙΣΜΟΥ ΔΙΑΦΟΡΑΣ ΧΡΟΝΟΥ ΚΑΤΑΓΡΑΦΙΚΟΥ
+Ημερομηνία δημιουργίας: ${formatDateTimeGreek(new Date())}
+
+1. ΔΕΔΟΜΕΝΑ ΕΛΕΓΧΟΥ
+──────────────────────────────────────────────────
+Πραγματική χρονική στιγμή ελέγχου:
+  Ημερομηνία: ${realDate.value}
+  Ώρα: ${realTime.value}
+
+Χρονική στιγμή καταγραφικού συστήματος:
+  Ημερομηνία: ${recordDate.value}
+  Ώρα: ${recordTime.value}
+
+2. ΕΠΙΘΥΜΗΤΟ ΔΙΑΣΤΗΜΑ ΛΗΨΗΣ ΥΛΙΚΟΥ
+──────────────────────────────────────────────────
+Έναρξη (πραγματική ώρα):
+  Ημερομηνία: ${desiredStartDate.value}
+  Ώρα: ${desiredStartTime.value}
+
+Λήξη (πραγματική ώρα):
+  Ημερομηνία: ${desiredEndDate.value}
+  Ώρα: ${desiredEndTime.value}
+
+3. ΤΟΠΟΘΕΣΙΑ
+──────────────────────────────────────────────────
+${locationInfo}
+
+4. ΑΠΟΤΕΛΕΣΜΑΤΑ ΥΠΟΛΟΓΙΣΜΟΥ
+──────────────────────────────────────────────────
+Χρονική διαφορά συστημάτων: ${formatDurationGreek(currentResults.timeDifference, true)}
+
+Ρυθμίσεις καταγραφικού συστήματος:
+  • Έναρξη: ${formatDateTimeGreek(currentResults.calculatedStart)}
+  • Λήξη: ${formatDateTimeGreek(currentResults.calculatedEnd)}
+
+Διάρκεια επιθυμητού υλικού: ${formatDurationGreek(currentResults.duration, false)}
+
+5. ΣΗΜΕΙΩΣΕΙΣ ΚΑΙ ΠΑΡΑΤΗΡΗΣΕΙΣ
+──────────────────────────────────────────────────
+${notes || 'Δεν υπάρχουν σημειώσεις.'}
+
+══════════════════════════════════════════════════
+ΕΡΓΑΛΕΙΟ ΥΠΟΛΟΓΙΣΜΟΥ ΔΙΑΦΟΡΑΣ ΧΡΟΝΟΥ ΚΑΤΑΓΡΑΦΙΚΩΝ - Έκδοση 2.0
+Για εσωτερική χρήση - Υ.Δ.Ε.Ε. Κατερίνης`;
+        }
+
+        /**
+         * Export to TXT file
+         */
+        function exportToTxt(notes = '') {
+            try {
+                const content = generateExportContent(notes);
+                const blob = new Blob([content], { 
+                    type: 'text/plain;charset=utf-8' 
+                });
+                
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = `Αναφορά_Υπολογισμού_Διαφοράς_Χρόνου_Καταγραφικών_${new Date().toISOString().split('T')[0]}.txt`;
+                
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                
+                URL.revokeObjectURL(url);
+                
+                showNotification('Το αρχείο TXT εξήχθη επιτυχώς', 'success');
+                
+            } catch (error) {
+                console.error('TXT export error:', error);
+                showNotification('Σφάλμα κατά την εξαγωγή TXT', 'error');
+            }
+        }
+
+        /**
+         * Export to PDF using print functionality
+         */
+        function exportToPrintPdf(notes = '') {
+            try {
+                // Create a print-friendly version
+                const printContent = document.createElement('div');
+                printContent.style.cssText = `
+                    font-family: 'Segoe UI', sans-serif;
+                    padding: 20px;
+                    max-width: 800px;
+                    margin: 0 auto;
+                    background: white;
+                    color: black;
+                `;
+                
+                const content = generateExportContent(notes);
+                printContent.innerHTML = `
+                    <div style="text-align: center; margin-bottom: 20px; border-bottom: 2px solid #133f64; padding-bottom: 10px;">
+                        <h1 style="color: #133f64; margin: 0;">Υ.Δ.Ε.Ε. Κατερίνης</h1>
+                        <h3 style="color: #194c6c; margin: 5px 0 0;">Αναφορά Υπολογισμού Διαφοράς Χρόνου Καταγραφικών</h3>
+                    </div>
+                    <pre style="white-space: pre-wrap; font-family: 'Courier New', monospace; font-size: 12px; line-height: 1.4;">${content}</pre>
+                    <div style="text-align: center; margin-top: 30px; font-size: 10px; color: #666; border-top: 1px solid #ccc; padding-top: 10px;">
+                        Εργαλείο Υπολογισμού Διαφοράς Χρόνου Καταγραφικών - Έκδοση 2.0
+                    </div>
+                `;
+                
+                // Open print dialog
+                const printWindow = window.open('', '_blank');
+                printWindow.document.write(`
+                    <!DOCTYPE html>
+                    <html>
+                    <head>
+                        <title>Αναφορά Υπολογισμού Διαφοράς Χρόνου Καταγραφικών</title>
+                        <style>
+                            @media print {
+                                @page { margin: 20mm; }
+                                body { -webkit-print-color-adjust: exact; }
+                            }
+                        </style>
+                    </head>
+                    <body>
+                        ${printContent.outerHTML}
+                        <script>
+                            window.onload = function() {
+                                window.print();
+                                setTimeout(function() {
+                                    window.close();
+                                }, 1000);
+                            }
+                        <\/script>
+                    </body>
+                    </html>
+                `);
+                printWindow.document.close();
+                
+            } catch (error) {
+                console.error('PDF export error:', error);
+                showNotification('Σφάλμα κατά τη δημιουργία PDF. Χρησιμοποιήστε την επιλογή "Εκτύπωση".', 'error');
+            }
+        }
+
+        /**
+         * Export to JSON
+         */
+        function exportToJson(notes = '') {
+            try {
+                const exportData = {
+                    metadata: {
+                        exportedAt: new Date().toISOString(),
+                        version: '6.0',
+                        organization: 'Υ.Δ.Ε.Ε. Κατερίνης',
+                        tool: 'Εργαλείο Υπολογισμού Διαφοράς Χρόνου Καταγραφικών'
+                    },
+                    formData: {
+                        realDate: realDate.value,
+                        realTime: realTime.value,
+                        recordDate: recordDate.value,
+                        recordTime: recordTime.value,
+                        desiredStartDate: desiredStartDate.value,
+                        desiredStartTime: desiredStartTime.value,
+                        desiredEndDate: desiredEndDate.value,
+                        desiredEndTime: desiredEndTime.value
+                    },
+                    results: {
+                        timeDifference: currentResults.timeDifference,
+                        calculatedStart: currentResults.calculatedStart.toISOString(),
+                        calculatedEnd: currentResults.calculatedEnd.toISOString(),
+                        duration: currentResults.duration,
+                        timeDifferenceFormatted: formatDurationGreek(currentResults.timeDifference, true),
+                        calculatedStartFormatted: formatDateTimeGreek(currentResults.calculatedStart),
+                        calculatedEndFormatted: formatDateTimeGreek(currentResults.calculatedEnd),
+                        durationFormatted: formatDurationGreek(currentResults.duration, false)
+                    },
+                    location: currentLocation,
+                    isLocationConfirmed: isLocationConfirmed,
+                    notes: notes
+                };
+                
+                const content = JSON.stringify(exportData, null, 2);
+                const blob = new Blob([content], { 
+                    type: 'application/json;charset=utf-8' 
+                });
+                
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = `Αναφορά_Υπολογισμού_Διαφοράς_Χρόνου_Καταγραφικών_${new Date().toISOString().split('T')[0]}.json`;
+                
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                
+                URL.revokeObjectURL(url);
+                
+                showNotification('Το αρχείο JSON εξήχθη επιτυχώς', 'success');
+                
+            } catch (error) {
+                console.error('JSON export error:', error);
+                showNotification('Σφάλμα κατά την εξαγωγή JSON', 'error');
+            }
+        }
+
+        /**
+         * Send email with attachment (mobile optimized)
+         */
+        async function sendEmailWithAttachment() {
+            if (!calculationPerformed) {
+                showNotification('Δεν υπάρχουν αποτελέσματα για αποστολή', 'error');
+                return;
+            }
+            
+            try {
+                // First create the file
+                const content = generateExportContent();
+                const blob = new Blob([content], { 
+                    type: 'text/plain;charset=utf-8' 
+                });
+                
+                // Check if Web Share API is available (mobile browsers)
+                if (navigator.share && navigator.canShare) {
+                    try {
+                        const file = new File([blob], `Αναφορά_Υπολογισμού_Διαφοράς_Χρόνου_Καταγραφικών_${new Date().toISOString().split('T')[0]}.txt`, {
+                            type: 'text/plain'
+                        });
+                        
+                        if (navigator.canShare({ files: [file] })) {
+                            await navigator.share({
+                                files: [file],
+                                title: 'Αποτελέσματα Υπολογισμού Διαφοράς Χρόνου Καταγραφικών',
+                                text: 'Παρακάτω επισυνάπτονται τα αποτελέσματα του υπολογισμού της διαφοράς χρόνου του καταγραφικού συστήματος.'
+                            });
+                            showNotification('Κοινοποιήθηκε επιτυχώς', 'success');
+                            return;
+                        }
+                    } catch (shareError) {
+                        console.log('Web Share API failed, falling back to download:', shareError);
+                    }
+                }
+                
+                // Fallback: Download file and show instructions
+                exportToTxt();
+                
+                // Show instructions for mobile users
+                setTimeout(() => {
+                    showNotification(
+                        'Το αρχείο λήφθηκε. Επιλέξτε την εφαρμογή διαμοιρασμού του αρχείου.',
+                        'info',
+                        6000
+                    );
+                }, 1000);
+                
+            } catch (error) {
+                console.error('Email error:', error);
+                showNotification('Σφάλμα κατά την προετοιμασία του αρχείου', 'error');
+            }
+        }
+
+        /**
+         * Handle print
+         */
+        function handlePrint() {
+            if (!calculationPerformed) {
+                showNotification('Δεν υπάρχουν αποτελέσματα για εκτύπωση', 'error');
+                return;
+            }
+            
+            window.print();
+        }
+
+        // ====================
+        // QR Code Functions
+        // ====================
+        
+        /**
+         * Generate QR Code using canvas
+         */
+        function generateQRCode() {
+            if (!calculationPerformed) {
+                showNotification('Δεν υπάρχουν αποτελέσματα για QR Code', 'error');
+                return;
+            }
+            
+            qrcodeContainer.classList.toggle('hidden');
+            
+            if (!qrcodeContainer.classList.contains('hidden')) {
+                // Clear previous QR code
+                qrcodeElement.innerHTML = '';
+                qrcodeTextElement.textContent = '';
+                
+                // Create QR code data (using simple text for better compatibility)
+                const qrData = createQRCodeData();
+                qrcodeTextElement.textContent = qrData;
+                
+                try {
+                    // Create QR code using qrcode.js with improved error handling
+                    new QRCode(qrcodeElement, {
+                        text: qrData,
+                        width: 200,
+                        height: 200,
+                        colorDark: "#000000",
+                        colorLight: "#ffffff",
+                        correctLevel: QRCode.CorrectLevel.M  // Lower level for larger data
+                    });
+                    
+                    showNotification('QR Code δημιουργήθηκε επιτυχώς', 'success');
+                    
+                } catch (error) {
+                    console.error('QR Code error:', error);
+                    qrcodeElement.innerHTML = `
+                        <div style="text-align: center; padding: 20px;">
+                            <i class="fas fa-exclamation-triangle fa-3x" style="color: #ff6b6b;"></i>
+                            <p style="margin-top: 10px;">Δεν μπορεί να δημιουργηθεί QR Code (πιθανώς πολύ μεγάλο κείμενο)</p>
+                            <p style="font-size: 0.9rem; color: #666;">Χρησιμοποιήστε το κείμενο παρακάτω ή μειώστε τα δεδομένα.</p>
+                        </div>
+                    `;
+                    showNotification('Σφάλμα δημιουργίας QR Code. Χρησιμοποιήστε το κείμενο.', 'warning');
+                }
+            }
+        }
+
+        /**
+         * Create QR code data - shortened version to fit QR limits
+         */
+        function createQRCodeData() {
+            // Create a shortened, essential version to fit QR code character limits (~2000-3000 chars max)
+            if (!currentResults) return '';
+            
+            let locationInfo = 'Δεν καταγράφηκε τοποθεσία';
+            if (currentResults.location && currentResults.isLocationConfirmed) {
+                locationInfo = `Τοποθεσία: ${locationName.textContent} (${currentResults.location.latitude.toFixed(6)}, ${currentResults.location.longitude.toFixed(6)})`;
+            }
+            
+            return `ΑΝΑΦΟΡΑ ΥΠΟΛΟΓΙΣΜΟΥ ΔΙΑΦΟΡΑΣ ΧΡΟΝΟΥ ΚΑΤΑΓΡΑΦΙΚΟΥ
+Ημερομηνία: ${formatDateTimeGreek(new Date())}
+
+Πραγματική ώρα ελέγχου: ${realDate.value} ${realTime.value}
+Καταγραφικό: ${recordDate.value} ${recordTime.value}
+
+Επιθυμητό διάστημα:
+Έναρξη: ${desiredStartDate.value} ${desiredStartTime.value}
+Λήξη: ${desiredEndDate.value} ${desiredEndTime.value}
+
+Τοποθεσία: ${locationInfo}
+
+Αποτελέσματα:
+Διαφορά: ${formatDurationGreek(currentResults.timeDifference, true)}
+Έναρξη καταγραφικού: ${formatDateTimeGreek(currentResults.calculatedStart)}
+Λήξη καταγραφικού: ${formatDateTimeGreek(currentResults.calculatedEnd)}
+Διάρκεια: ${formatDurationGreek(currentResults.duration, false)}
+
+Έκδοση 2.0 - Υ.Δ.Ε.Ε. Κατερίνης`;
+        }
+
+        /**
+         * Download QR Code as image
+         */
+        function downloadQRCode() {
+            const canvas = qrcodeElement.querySelector('canvas');
+            if (!canvas) {
+                showNotification('Δεν υπάρχει QR Code για λήψη', 'error');
+                return;
+            }
+            
+            try {
+                const link = document.createElement('a');
+                link.download = `QRCode_Υπολογισμού_Διαφοράς_Χρόνου_Καταγραφικών_${new Date().toISOString().split('T')[0]}.png`;
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+                
+                showNotification('QR Code λήφθηκε επιτυχώς', 'success');
+            } catch (error) {
+                console.error('QR download error:', error);
+                showNotification('Σφάλμα κατά τη λήψη του QR Code', 'error');
+            }
+        }
+
+        /**
+         * Copy QR code text to clipboard
+         */
+        function copyQRCodeText() {
+            const text = qrcodeTextElement.textContent;
+            if (!text) {
+                showNotification('Δεν υπάρχει κείμενο για αντιγραφή', 'error');
+                return;
+            }
+            
+            navigator.clipboard.writeText(text).then(
+                () => showNotification('Το κείμενο αντιγράφηκε στο clipboard', 'success'),
+                () => showNotification('Αποτυχία αντιγραφής στο clipboard. Δοκιμάστε χειροκίνητα.', 'error')
+            );
+        }
+
+        // ====================
+        // Initialize App
+        // ====================
+        
+        document.addEventListener('DOMContentLoaded', initApp);
+
+    </script>
+</body>
+</html>
+</DOCUMENT></DOCUMENT>
+</DOCUMENT>
