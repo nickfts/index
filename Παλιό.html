@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Υπολογισμός Διαφοράς Ημερομηνίας και Ώρας</title>
+<meta name="viewport" content="width=device-width, initial-scale=0.75">
+<style>
+body {
+font-family: Calibri;
+font-size: 18px;
+background-image: url(https://cdn.epixeiro.gr/craftuploads/_mainImage169/black-and-white-black-and-white-monochrome-clocks.jpg?mtime=20191103192713);
+opacity: 0,5;
+background-size: cover;
+background-color: rgba(255, 255, 255, 0.8);
+position: relative;
+max-width: 500px;
+height: 1000px;
+margin: 0 auto;
+padding: 20px;
+overflow-x: hidden;
+text-align: center; /* ÊåíôñÜñåé ôá êåßìåíá ïñéæüíôéá */
+}
+
+body::before {
+content: "";
+background-color: rgba(255, 255, 255, 0.8); /* ÄéáöÜíåéá ôïõ öüíôïõ */
+background-position: center;
+background-repeat: no-repeat;
+opacity: 1; /* Ñõèìßóôå ôç äéáöÜíåéá åäþ, áðü 0.0 (áüñáôï) Ýùò 1.0 (ðëÞñçò ïñáôüôçôá) */
+position: absolute;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+z-index: -1;
+}
+h1 {
+color: rgb(19, 63, 100);
+font-size: 22px;
+font-weight: bold;
+text-align: center; /* ÊåíôñÜñåé ôá êåßìåíá ïñéæüíôéá */
+}
+
+h2 {
+color: rgb(25, 76, 108);
+font-size: 18px;
+font-weight: bold;
+text-align: center; /* ÊåíôñÜñåé ôá êåßìåíá ïñéæüíôéá */
+}
+
+label {
+color: rgb(50, 50, 72);
+font-size: 18px;
+display: block; /* ÊåíôñÜñåé ôá êåßìåíá êáôáêüñõöá */
+text-align: center; /* ÊåíôñÜñåé ôá êåßìåíá ïñéæüíôéá */
+}
+
+input {
+color: rgb(50, 50, 72);
+font-size: 18px;
+display: block; /* ÊåíôñÜñåé ôéò åéóáãùãÝò êáôáêüñõöá */
+margin: 0 auto; /* ÊåíôñÜñåé ôéò åéóáãùãÝò ïñéæüíôéá */
+}
+
+p {
+color: rgb(150, 55, 37);
+font-size: 18px;
+font-weight: bold;
+text-align: center; /* ÊåíôñÜñåé ôá êåßìåíá ïñéæüíôéá */
+}
+p2 {
+color: rgb(200, 60, 70);
+font-size: 24px;
+font-weight: bold;
+text-align: center; /* ÊåíôñÜñåé ôá êåßìåíá ïñéæüíôéá */
+}
+
+button {
+margin-top: 10px;
+font-size: 18px;
+background-color: rgb(80, 120, 150);
+color: rgb(20, 47, 84);
+font-weight: bold;
+padding: 8px 16px;
+border: 4px single rgb(20, 47, 84); /* ÐáñÜäåéãìá: ðÜ÷ïò 2 pixels, óõíå÷Ýò ðåñßãñáììá, êüêêéíï ÷ñþìá */
+cursor: pointer;
+display: block; /* ÊåíôñÜñåé ôá êïõìðéÜ êáôáêüñõöá */
+margin: 0 auto; /* ÊåíôñÜñåé ôá êïõìðéÜ ïñéæüíôéá */
+}
+
+.currentDateTime {
+font-family: Calibri;
+font-size: 13px;
+font-weight: normal;
+color: rgb(50, 50, 60);
+text-align: center;
+}
+</style>
+</head>
+<body>
+<h1>ΥΠΟΔΙΕΥΘΥΝΣΗ ΔΙΩΞΗΣ & ΕΞΙΧΝΙΑΣΗΣ ΕΓΚΛΗΜΑΤΩΝ ΚΑΤΕΡΙΝΗΣ</h1>
+<h1>ΟΜΑΔΑ ΔΙΩΞΗΣ ΕΓΚΛΗΜΑΤΩΝ</h1>
+<h1></h1>
+<h1></h1>
+<h2>Εισάγετε Πραγματική Ημερομηνία και Ώρα</h2>
+<label for="realDate">Ημερομηνία:</label>
+<input type="date" id="realDate">
+<label for="realTime">Ώρα:</label>
+<input type="time" id="realTime">
+
+<h2>Εισάγετε Ημερομηνία και Ώρα "Καταγραφικού"</h2>
+<label for="recordDate">Ημερομηνία:</label>
+<input type="date" id="recordDate">
+<label for="recordTime">Ώρα:</label>
+<input type="time" id="recordTime">
+
+<h2>Επιθυμητή Πραγματική Ημερομηνία και Ώρα Έναρξης</h2>
+<label for="desiredStartDate">Ημερομηνία:</label>
+<input type="date" id="desiredStartDate">
+<label for="desiredStartTime">Ώρα:</label>
+<input type="time" id="desiredStartTime">
+
+<h2>Επιθυμητή Πραγματική Ημερομηνία και Ώρα Λήξης</h2>
+<label for="desiredEndDate">Ημερομηνία:</label>
+<input type="date" id="desiredEndDate">
+<label for="desiredEndTime">Ώρα:</label>
+<input type="time" id="desiredEndTime">
+</p>
+</p>
+<button onclick="calculateDifference()">Υπολογισμός Διαφοράς</button>
+<div class="currentDateTime" id="currentDateTime"></div>
+<p id="result"></p>
+
+<script>
+function formatDateTime(dateTime) {
+const options = {
+year: "numeric",
+month: "2-digit",
+day: "2-digit",
+hour: "2-digit",
+minute: "2-digit",
+hour12: false,
+};
+return new Date(dateTime).toLocaleString("el-GR", options);
+}
+
+function calculateDifference() {
+const realDate = document.getElementById("realDate").value;
+const realTime = document.getElementById("realTime").value;
+
+const recordDate = document.getElementById("recordDate").value;
+const recordTime = document.getElementById("recordTime").value;
+
+const desiredStartDate = document.getElementById("desiredStartDate").value;
+const desiredStartTime = document.getElementById("desiredStartTime").value;
+
+const desiredEndDate = document.getElementById("desiredEndDate").value;
+const desiredEndTime = document.getElementById("desiredEndTime").value;
+
+// ÓõíäõÜæïõìå ôéò çìåñïìçíßåò êáé ôéò þñåò
+const realDateTime = new Date(`${realDate}T${realTime}`);
+const recordDateTime = new Date(`${recordDate}T${recordTime}`);
+const desiredStartDateTime = new Date(`${desiredStartDate}T${desiredStartTime}`);
+const desiredEndDateTime = new Date(`${desiredEndDate}T${desiredEndTime}`);
+
+// Õðïëïãéóìüò äéáöïñÜò ìåôáîý ðñáãìáôéêÞò çìåñïìçíßáò êáé çìåñïìçíßáò "Êáôáãñáöéêïý"
+const differenceRealAndRecord = recordDateTime - realDateTime;
+
+// Õðïëïãéóìüò äéáöïñÜò ìåôáîý ôùí åðéèõìçôþí çìåñïìçíéþí Ýíáñîçò êáé ëÞîçò
+const desiredDifference = desiredEndDateTime - desiredStartDateTime;
+
+// ÐñïóèÝôïõìå ôéò äéáöïñÝò óôéò åðéèõìçôÝò çìåñïìçíßåò Ýíáñîçò êáé ëÞîçò
+const resultStartDateTime = new Date(desiredStartDateTime.getTime() + differenceRealAndRecord);
+const resultEndDateTime = new Date(desiredEndDateTime.getTime() + differenceRealAndRecord);
+
+// Åìöáíßæïõìå ôá áðïôåëÝóìáôá ìå ôçí åðéèõìçôÞ ìïñöÞ
+const resultElement = document.getElementById("result");
+resultElement.innerHTML = `<p>Για να λάβετε υλικό για το χρονικό διάστημα που δηλώσατε ρυθμίστε το καταγραφικό με:</p>
+         <p> Ημερομηνία Έναρξης:  <p2 class="start-end">${formatDateTime(resultStartDateTime)} </p> Έως Ημερομηνία Λήξης:  <p2 class="start-end">${formatDateTime(resultEndDateTime)}</p>`;
+}
+
+function displayCurrentDateTime() {
+const now = new Date();
+const options = {
+year: "numeric",
+month: "2-digit",
+day: "2-digit",
+hour: "2-digit",
+minute: "2-digit",
+hour12: false,
+};
+const currentDateTimeElement = document.getElementById("currentDateTime");
+currentDateTimeElement.textContent = "Ημερομηνία/ώρα υπολογισμού: " + now.toLocaleString("el-GR", options);
+}
+
+const button = document.querySelector("button");
+button.addEventListener("click", function () {
+calculateDifference();
+displayCurrentDateTime();
+});
+
+function exportData() {
+/* Ï êþäéêáò ãéá ôçí åîáãùãÞ ðáñáìÝíåé ùò Ý÷åé */
+}
+
+</script>
+
+
+<!-- ÐñïóèÝôïõìå Ýíá íÝï êïõìðß ìå ôçí éäÝá "Export Data" -->
+<button onclick="exportData()">Λήψη Σημειώσεων</button>
+
+<script>
+function exportData() {
+const realDate = document.getElementById("realDate").value;
+const realTime = document.getElementById("realTime").value;
+
+const recordDate = document.getElementById("recordDate").value;
+const recordTime = document.getElementById("recordTime").value;
+
+const desiredStartDate = document.getElementById("desiredStartDate").value;
+const desiredStartTime = document.getElementById("desiredStartTime").value;
+
+const desiredEndDate = document.getElementById("desiredEndDate").value;
+const desiredEndTime = document.getElementById("desiredEndTime").value;
+
+// Ðáßñíïõìå ôá áðïôåëÝóìáôá áðü ôï ðåäßï ôïõ áðïôåëÝóìáôïò
+const resultText = document.getElementById("result").innerText;
+// Ðáßñíïõìå ôá áðïôåëÝóìáôá áðü ôï ðåäßï ÷ñüíïò õðïëïãéóìïý
+const currentDateTime = document.getElementById("currentDateTime").textContent;
+// Äçìéïõñãïýìå ôï ðåñéå÷üìåíï ðïõ èá ãñáöôåß óôï áñ÷åßï txt
+const content = `
+ΥΠΟΔΙΕΥΘΥΝΣΗ ΑΣΦΑΛΕΙΑΣ ΚΑΤΕΡΙΝΗΣ
+ΟΜΑΔΑ ΔΗΜΟΣΙΑΣ ΑΣΦΑΛΕΙΑΣ
+ΥΠΟΔΙΕΥΘΥΝΣΗ ΔΙΩΞΗΣ & ΕΞΙΧΝΙΑΣΗΣ ΕΓΚΛΗΜΑΤΩΝ ΚΑΤΕΡΙΝΗΣ
+ΟΜΑΔΑ ΔΙΩΞΗΣ ΕΓΚΛΗΜΑΤΩΝ
+
+Σημειώσεις Λήψης Βιντεοληπτικού υλικού
+
+Πραγματική Ημερομηνία και Ώρα (κατά τη στιγμή του ελέγχου):
+Ημερομηνία: ${realDate}
+Ώρα: ${realTime}
+
+Ημερομηνία και Ώρα "Καταγραφικού" (κατά τη στιγμή του ελέγχου):
+Ημερομηνία: ${recordDate}
+Ώρα: ${recordTime}
+
+Επιθυμητή Πραγματική Ημερομηνία και Ώρα Έναρξης Λήψης Βιντεοληπτικού Υλικού:
+Ημερομηνία: ${desiredStartDate}
+Ώρα: ${desiredStartTime}
+
+Επιθυμητή Πραγματική Ημερομηνία και Ώρα Λήξης Λήψης Βιντεοληπτικού Υλικού:
+Ημερομηνία: ${desiredEndDate}
+Ώρα: ${desiredEndTime}
+
+
+${resultText}
+
+---------------------------------------------------------------------------------
+
+Σημειώσεις σχετικά με το υλικό:
+
+
+
+
+
+
+
+
+---------------------------------------------------------------------------------
+[${currentDateTime}]
+
+
+
+
+
+
+`;
+
+// Äçìéïõñãïýìå Ýíá íÝï áíôéêåßìåíï Blob ìå ôï ðåñéå÷üìåíï ôïõ áñ÷åßïõ txt
+const blob = new Blob([content], { type: "text/plain" });
+
+// Äçìéïõñãïýìå Ýíá óýíäåóìï ðïõ áíôéðñïóùðåýåé ôï áñ÷åßï
+const link = document.createElement("a");
+link.href = URL.createObjectURL(blob);
+link.download = "Σημειώσεις.txt"; // ¼íïìá áñ÷åßïõ ðïõ èá êáôåâÜóåôå
+
+// ÐñïóèÝôïõìå ôïí óýíäåóìï óôçí óåëßäá êáé ôïí êëéêÜñïõìå áõôüìáôá
+document.body.appendChild(link);
+link.click();
+
+// Êáèáñßæïõìå ôïí óýíäåóìï áðü ôçí óåëßäá ãéá íá ìçí åìöáíßæåôáé
+document.body.removeChild(link);
+}
+</script>
+
+
+
+
+
+
+</body>
+</html>
