@@ -12,6 +12,11 @@
     <title>Υπολογιμός Διαφοράς Χρόνου Καταγραφικών - Υ.Δ.Ε.Ε. Κατερίνης</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="manifest" href="manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content="ΥΔΕΕ Κατερίνης">
+    <link rel="apple-touch-icon" href="icons/icon-180x180.png">  <!-- Προσθέστε icon για iOS -->
     <style>
         /* CSS Variables for Themes */
         :root {
@@ -2771,9 +2776,24 @@ ${notes || 'Δεν υπάρχουν σημειώσεις.'}
         document.addEventListener('DOMContentLoaded', initApp);
 
     </script>
+    <!-- ΕΔΩ ΠΡΟΣΘΕΣΕ ΤΟ SERVICE WORKER REGISTRATION -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js')
+                    .then((registration) => {
+                        console.log('Service Worker registered with scope:', registration.scope);
+                    })
+                    .catch((error) => {
+                        console.error('Service Worker registration failed:', error);
+                    });
+            });
+        }
+    </script>
 </body>
 </html>
 </DOCUMENT></DOCUMENT>
 
 </DOCUMENT>
+
 
