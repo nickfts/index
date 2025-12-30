@@ -2053,8 +2053,8 @@
             // Clear results
             clearResults();
             
-            // Reset to defaults
-            setupDateTimeDefaults();
+            // Reset to defaults (αυτή τη συνάρτηση την ενεργοποιούμε αν θελουμε το κουμπί διαγραφής να συμπληρώνει με τρέχουσα ώρα)
+            // setupDateTimeDefaults();
             
             // Hide QR code
             qrcodeContainer.classList.add('hidden');
@@ -2800,6 +2800,7 @@ ${notes || 'Δεν υπάρχουν σημειώσεις.'}
 </DOCUMENT></DOCUMENT>
 
 </DOCUMENT>
+
 
 
 
