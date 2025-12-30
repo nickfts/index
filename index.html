@@ -2684,36 +2684,41 @@ ${notes || 'Δεν υπάρχουν σημειώσεις.'}
              .replace(/\n+/g, ' ')
              .trim();
 
-  	       qrcodeTextElement.textContent = qrData;
+  	       qrcodeContainer.classList.toggle('hidden');
 
-           // ⬇️ ΑΠΑΡΑΙΤΗΤΟ: περίμενε να εμφανιστεί το container
-           setTimeout(() => {
-      	      try {
-                 new QRCode(qrcodeElement, {
-               	  	  text: qrData,
-                	  width: 200,
-              	      height: 200,
-               		  colorDark: "#000000",
-               		  colorLight: "#ffffff",
-                	  correctLevel: QRCode.CorrectLevel.L,
-                	  typeNumber: 10
-         	     });
+if (!qrcodeContainer.classList.contains('hidden')) {
+    qrcodeElement.innerHTML = '';
+    qrcodeTextElement.textContent = '';
 
-                 showNotification('QR Code δημιουργήθηκε επιτυχώς', 'success');
+    const qrData = createQRCodeData()
+        .replace(/\n+/g, ' ')
+        .trim();
 
-              } catch (error) {
-                 console.error('QR Code error:', error);
-                 qrcodeElement.innerHTML = `
-              	      <div style="text-align: center; padding: 20px;">
-                  	    <i class="fas fa-exclamation-triangle fa-3x" style="color: #ff6b6b;"></i>
-                  	    <p style="margin-top: 10px;">Δεν μπορεί να δημιουργηθεί QR Code</p>
-                   	    <p style="font-size: 0.9rem; color: #666;">Χρησιμοποιήστε το κείμενο παρακάτω.</p>
-             	      </div>
-           	     `;
-         	     showNotification('Σφάλμα δημιουργίας QR Code', 'warning');
-              }
-          }, 0);
+    qrcodeTextElement.textContent = qrData;
+
+    setTimeout(() => {
+        new QRCode(qrcodeElement, {
+            text: qrData,
+            width: 200,
+            height: 200,
+            colorDark: "#000000",
+            colorLight: "#ffffff",
+            correctLevel: QRCode.CorrectLevel.L,
+            typeNumber: 10
+        });
+
+        // ✅ Ο ΜΟΝΟΣ σωστός έλεγχος
+        const canvas = qrcodeElement.querySelector('canvas');
+
+        if (canvas) {
+            showNotification('QR Code δημιουργήθηκε επιτυχώς', 'success');
+        } else {
+            qrcodeElement.textContent = 'Αποτυχία δημιουργίας QR Code';
+            showNotification('Σφάλμα δημιουργίας QR Code', 'warning');
         }
+    }, 0);
+}
+
 	  }
         /**
          * Create QR code data - shortened version to fit QR limits
@@ -2816,6 +2821,7 @@ ${notes || 'Δεν υπάρχουν σημειώσεις.'}
 </DOCUMENT></DOCUMENT>
 
 </DOCUMENT>
+
 
 
 
