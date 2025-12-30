@@ -2667,59 +2667,52 @@ ${notes || 'Δεν υπάρχουν σημειώσεις.'}
         /**
          * Generate QR Code using canvas
          */
-        function generateQRCode() {
-            if (!calculationPerformed) {
-                showNotification('Δεν υπάρχουν αποτελέσματα για QR Code', 'error');
-                return;
+function generateQRCode() {
+    if (!calculationPerformed) {
+        showNotification('Δεν υπάρχουν αποτελέσματα για QR Code', 'error');
+        return;
+    }
+
+    // Toggle visibility (show if hidden)
+    qrcodeContainer.classList.toggle('hidden');
+
+    // If now visible, generate QR
+    if (!qrcodeContainer.classList.contains('hidden')) {
+        // Clear previous QR code
+        qrcodeElement.innerHTML = '';
+        qrcodeTextElement.textContent = '';
+
+        const qrData = createQRCodeData()
+            .replace(/\n+/g, ' ')
+            .trim();
+
+        qrcodeTextElement.textContent = qrData;
+
+        setTimeout(() => {
+            new QRCode(qrcodeElement, {
+                text: qrData,
+                width: 200,
+                height: 200,
+                colorDark: "#000000",
+                colorLight: "#ffffff",
+                correctLevel: QRCode.CorrectLevel.L,
+                typeNumber: 10
+            });
+
+            // Check if canvas was created
+            const canvas = qrcodeElement.querySelector('canvas');
+            if (canvas) {
+                showNotification('QR Code δημιουργήθηκε επιτυχώς', 'success');
+            } else {
+                qrcodeElement.textContent = 'Αποτυχία δημιουργίας QR Code';
+                showNotification('Σφάλμα δημιουργίας QR Code', 'warning');
             }
-            
-		qrcodeContainer.classList.toggle('hidden');
-
-		if (!qrcodeContainer.classList.contains('hidden')) {
-  		  // Clear previous QR code
-   		   qrcodeElement.innerHTML = '';
- 	       qrcodeTextElement.textContent = '';
-
-   		   const qrData = createQRCodeData()
-             .replace(/\n+/g, ' ')
-             .trim();
-
-  	       qrcodeContainer.classList.toggle('hidden');
-
-if (!qrcodeContainer.classList.contains('hidden')) {
-    qrcodeElement.innerHTML = '';
-    qrcodeTextElement.textContent = '';
-
-    const qrData = createQRCodeData()
-        .replace(/\n+/g, ' ')
-        .trim();
-
-    qrcodeTextElement.textContent = qrData;
-
-    setTimeout(() => {
-        new QRCode(qrcodeElement, {
-            text: qrData,
-            width: 200,
-            height: 200,
-            colorDark: "#000000",
-            colorLight: "#ffffff",
-            correctLevel: QRCode.CorrectLevel.L,
-            typeNumber: 10
-        });
-
-        // ✅ Ο ΜΟΝΟΣ σωστός έλεγχος
-        const canvas = qrcodeElement.querySelector('canvas');
-
-        if (canvas) {
-            showNotification('QR Code δημιουργήθηκε επιτυχώς', 'success');
-        } else {
-            qrcodeElement.textContent = 'Αποτυχία δημιουργίας QR Code';
-            showNotification('Σφάλμα δημιουργίας QR Code', 'warning');
-        }
-    }, 0);
-	}
-	}
-        /**
+        }, 0);
+    } else {
+        // If toggled to hidden, show message
+        showNotification('Το QR Code έκλεισε', 'info');
+    }
+}        /**
          * Create QR code data - shortened version to fit QR limits
          */
         function createQRCodeData() {
@@ -2817,6 +2810,7 @@ if (!qrcodeContainer.classList.contains('hidden')) {
 
 </body>
 </html>
+
 
 
 
