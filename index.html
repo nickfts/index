@@ -1305,23 +1305,32 @@
         /**
          * Format duration in Greek
          */
-        function formatDurationGreek(ms, isDifference = true) {
-            const isNegative = ms < 0;
-            const absMs = Math.abs(ms);
-            
-            const hours = Math.floor(absMs / (1000 * 60 * 60));
-            const minutes = Math.floor((absMs % (1000 * 60 * 60)) / (1000 * 60));
-            
-            let result = '';
-            if (hours > 0) result += `${hours} ώρ${hours === 1 ? 'α' : 'ες'} `;
-            if (minutes > 0 || hours === 0) result += `${minutes} λεπτ${minutes === 1 ? 'ό' : 'ά'}`;
-            
-            if (isDifference) {
-                return isNegative ? `Για να βρούμε τον πραγματικό χρόνο, στον χρόνο του καταγραφικού προσθέτουμε ${result}` : `Για να βρούμε τον πραγματικό χρόνο, από το χρόνο του καταγραφικού αφαιρούμε ${result}`;
-            } else {
-                return result;
-            }
+	function formatDurationGreek(ms, isDifference = true) {
+      const isNegative = ms < 0;
+   	  const absMs = Math.abs(ms);
+    
+  	  const years = Math.floor(absMs / (1000 * 60 * 60 * 24 * 365));
+      const months = Math.floor((absMs % (1000 * 60 * 60 * 24 * 365)) / (1000 * 60 * 60 * 24 * 30.44));
+      const days = Math.floor((absMs % (1000 * 60 * 60 * 24 * 30.44)) / (1000 * 60 * 60 * 24));
+   	  const hours = Math.floor((absMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+   	  const minutes = Math.floor((absMs % (1000 * 60 * 60)) / (1000 * 60));
+    
+  	  const parts = [];
+    
+      if (years > 0) parts.push(`${years} ${years === 1 ? 'χρόνο' : 'χρόνια'}`);
+      if (months > 0) parts.push(`${months} ${months === 1 ? 'μήνα' : 'μήνες'}`);
+      if (days > 0) parts.push(`${days} ${days === 1 ? 'ημέρα' : 'ημέρες'}`);
+   	  if (hours > 0) parts.push(`${hours} ${hours === 1 ? 'ώρα' : 'ώρες'}`);
+  	  if (minutes > 0) parts.push(`${minutes} ${minutes === 1 ? 'λεπτό' : 'λεπτά'}`);
+    
+ 	  let result = parts.length > 0 ? parts.join(', ') : '0 λεπτά';
+    
+  	  if (isDifference) {
+            return isNegative ? `Για να βρούμε τον πραγματικό χρόνο, στον χρόνο του καταγραφικού προσθέτουμε ${result}` : `Για να βρούμε τον πραγματικό χρόνο, από το χρόνο του καταγραφικού αφαιρούμε ${result}`;
+       } else {
+            return result;
         }
+       }
 
         /**
          * Show notification to user
@@ -2800,6 +2809,7 @@ ${notes || 'Δεν υπάρχουν σημειώσεις.'}
 </DOCUMENT></DOCUMENT>
 
 </DOCUMENT>
+
 
 
 
