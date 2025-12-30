@@ -2667,52 +2667,51 @@ ${notes || 'Δεν υπάρχουν σημειώσεις.'}
         /**
          * Generate QR Code using canvas
          */
-function generateQRCode() {
-    if (!calculationPerformed) {
-        showNotification('Δεν υπάρχουν αποτελέσματα για QR Code', 'error');
-        return;
-    }
-
-    // Toggle visibility (show if hidden)
-    qrcodeContainer.classList.toggle('hidden');
-
-    // If now visible, generate QR
-    if (!qrcodeContainer.classList.contains('hidden')) {
-        // Clear previous QR code
-        qrcodeElement.innerHTML = '';
-        qrcodeTextElement.textContent = '';
-
-        const qrData = createQRCodeData()
-            .replace(/\n+/g, ' ')
-            .trim();
-
-        qrcodeTextElement.textContent = qrData;
-
-        setTimeout(() => {
-            new QRCode(qrcodeElement, {
-                text: qrData,
-                width: 200,
-                height: 200,
-                colorDark: "#000000",
-                colorLight: "#ffffff",
-                correctLevel: QRCode.CorrectLevel.L,
-                typeNumber: 10
-            });
-
-            // Check if canvas was created
-            const canvas = qrcodeElement.querySelector('canvas');
-            if (canvas) {
-                showNotification('QR Code δημιουργήθηκε επιτυχώς', 'success');
-            } else {
-                qrcodeElement.textContent = 'Αποτυχία δημιουργίας QR Code';
-                showNotification('Σφάλμα δημιουργίας QR Code', 'warning');
+        function generateQRCode() {
+            if (!calculationPerformed) {
+                showNotification('Δεν υπάρχουν αποτελέσματα για QR Code', 'error');
+                return;
             }
-        }, 0);
-    } else {
-        // If toggled to hidden, show message
-        showNotification('Το QR Code έκλεισε', 'info');
-    }
-}        /**
+            
+            qrcodeContainer.classList.toggle('hidden');
+            
+            if (!qrcodeContainer.classList.contains('hidden')) {
+                // Clear previous QR code
+                qrcodeElement.innerHTML = '';
+                qrcodeTextElement.textContent = '';
+                
+                // Create QR code data (using simple text for better compatibility)
+                const qrData = createQRCodeData();
+                qrcodeTextElement.textContent = qrData;
+                
+                try {
+                    // Create QR code using qrcode.js with improved error handling
+                    new QRCode(qrcodeElement, {
+                        text: qrData,
+                        width: 200,
+                        height: 200,
+                        colorDark: "#000000",
+                        colorLight: "#ffffff",
+                        correctLevel: QRCode.CorrectLevel.L  // Lower level for larger data
+                    });
+                    
+                    showNotification('QR Code δημιουργήθηκε επιτυχώς', 'success');
+                    
+                } catch (error) {
+                    console.error('QR Code error:', error);
+                    qrcodeElement.innerHTML = `
+                        <div style="text-align: center; padding: 20px;">
+                            <i class="fas fa-exclamation-triangle fa-3x" style="color: #ff6b6b;"></i>
+                            <p style="margin-top: 10px;">Δεν μπορεί να δημιουργηθεί QR Code (πιθανώς πολύ μεγάλο κείμενο)</p>
+                            <p style="font-size: 0.9rem; color: #666;">Χρησιμοποιήστε το κείμενο παρακάτω ή μειώστε τα δεδομένα.</p>
+                        </div>
+                    `;
+                    showNotification('Σφάλμα δημιουργίας QR Code. Χρησιμοποιήστε το κείμενο.', 'warning');
+                }
+            }
+        }
+
+        /**
          * Create QR code data - shortened version to fit QR limits
          */
         function createQRCodeData() {
@@ -2793,9 +2792,9 @@ function generateQRCode() {
         
         document.addEventListener('DOMContentLoaded', initApp);
 
-   
-    //-- ΕΔΩ ΠΡΟΣΘΕΣΕ ΤΟ SERVICE WORKER REGISTRATION --
-
+    </script>
+    <!-- ΕΔΩ ΠΡΟΣΘΕΣΕ ΤΟ SERVICE WORKER REGISTRATION -->
+    <script>
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('./sw.js')
@@ -2807,17 +2806,12 @@ function generateQRCode() {
                     });
             });
         }
-
+    </script>
 </body>
 </html>
+</DOCUMENT></DOCUMENT>
 
-
-
-
-
-
-
-
+</DOCUMENT>
 
 
 
