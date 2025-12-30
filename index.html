@@ -2723,25 +2723,28 @@ ${notes || 'Δεν υπάρχουν σημειώσεις.'}
                 locationInfo = `Τοποθεσία: ${locationName.textContent} (${currentResults.location.latitude.toFixed(6)}, ${currentResults.location.longitude.toFixed(6)})`;
             }
             
-            return `ΑΝΑΦΟΡΑ ΥΠΟΛΟΓΙΣΜΟΥ ΔΙΑΦΟΡΑΣ ΧΡΟΝΟΥ ΚΑΤΑΓΡΑΦΙΚΟΥ
-Ημερομηνία: ${formatDateTimeGreek(new Date())}
+            //return `ΑΝΑΦΟΡΑ ΥΠΟΛΟΓΙΣΜΟΥ ΔΙΑΦΟΡΑΣ ΧΡΟΝΟΥ ΚΑΤΑΓΡΑΦΙΚΟΥ
+//Ημερομηνία: ${formatDateTimeGreek(new Date())}
 
-Πραγματική ώρα ελέγχου: ${realDate.value} ${realTime.value}
-Καταγραφικό: ${recordDate.value} ${recordTime.value}
+//Πραγματική ώρα ελέγχου: ${realDate.value} ${realTime.value}
+//Καταγραφικό: ${recordDate.value} ${recordTime.value}
 
-Επιθυμητό διάστημα:
-Έναρξη: ${desiredStartDate.value} ${desiredStartTime.value}
-Λήξη: ${desiredEndDate.value} ${desiredEndTime.value}
+//Επιθυμητό διάστημα:
+//Έναρξη: ${desiredStartDate.value} ${desiredStartTime.value}
+//Λήξη: ${desiredEndDate.value} ${desiredEndTime.value}
 
-Τοποθεσία: ${locationInfo}
+//Τοποθεσία: ${locationInfo}
 
-Αποτελέσματα:
-Διαφορά: ${formatDurationGreek(currentResults.timeDifference, true)}
-Έναρξη καταγραφικού: ${formatDateTimeGreek(currentResults.calculatedStart)}
-Λήξη καταγραφικού: ${formatDateTimeGreek(currentResults.calculatedEnd)}
-Διάρκεια: ${formatDurationGreek(currentResults.duration, false)}
+//Αποτελέσματα:
+//Διαφορά: ${formatDurationGreek(currentResults.timeDifference, true)}
+//Έναρξη καταγραφικού: ${formatDateTimeGreek(currentResults.calculatedStart)}
+//Λήξη καταγραφικού: ${formatDateTimeGreek(currentResults.calculatedEnd)}
+//Διάρκεια: ${formatDurationGreek(currentResults.duration, false)}
 
-Έκδοση 2.0 - Υ.Δ.Ε.Ε. Κατερίνης`;
+//Έκδοση 2.0 - Υ.Δ.Ε.Ε. Κατερίνης`;
+			return `Πραγματική ${realDate.value} ${realTime.value}
+Καταγραφικού ${recordDate.value} ${recordTime.value}
+Τοποθεσία ${currentResults?.location && currentResults.isLocationConfirmed ? `${currentResults.location.latitude.toFixed(4)}, ${currentResults.location.longitude.toFixed(4)}` : 'Χωρίς τοποθεσία'}`;
         }
 
         /**
@@ -2809,6 +2812,7 @@ ${notes || 'Δεν υπάρχουν σημειώσεις.'}
 </DOCUMENT></DOCUMENT>
 
 </DOCUMENT>
+
 
 
 
