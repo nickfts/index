@@ -2673,44 +2673,47 @@ ${notes || 'Δεν υπάρχουν σημειώσεις.'}
                 return;
             }
             
-            qrcodeContainer.classList.toggle('hidden');
-            
-            if (!qrcodeContainer.classList.contains('hidden')) {
-                // Clear previous QR code
-                qrcodeElement.innerHTML = '';
-                qrcodeTextElement.textContent = '';
-                
-                // Create QR code data (using simple text for better compatibility)
-                const qrData = createQRCodeData();
-                qrcodeTextElement.textContent = qrData;
-                
-                try {
-     		  	 // Create QR code using qrcode.js
-       			 new QRCode(qrcodeElement, {
-           		  text: qrData,
-         	      width: 200,
-          		  height: 200,
-         	      colorDark: "#000000",
-         	      colorLight: "#ffffff",
-          	      correctLevel: QRCode.CorrectLevel.L,
-         	      typeNumber: 10   // ⭐ ΑΠΑΡΑΙΤΗΤΟ για ελληνικά / UTF-8
-      		     });
-                    
-                 showNotification('QR Code δημιουργήθηκε επιτυχώς', 'success');
-                    
-                } catch (error) {
-                    console.error('QR Code error:', error);
-                    qrcodeElement.innerHTML = `
-                        <div style="text-align: center; padding: 20px;">
-                            <i class="fas fa-exclamation-triangle fa-3x" style="color: #ff6b6b;"></i>
-                            <p style="margin-top: 10px;">Δεν μπορεί να δημιουργηθεί QR Code (πιθανώς πολύ μεγάλο κείμενο)</p>
-                            <p style="font-size: 0.9rem; color: #666;">Χρησιμοποιήστε το κείμενο παρακάτω ή μειώστε τα δεδομένα.</p>
-                        </div>
-                    `;
-                    showNotification('Σφάλμα δημιουργίας QR Code. Χρησιμοποιήστε το κείμενο.', 'warning');
-                }
-            }
+qrcodeContainer.classList.toggle('hidden');
+
+if (!qrcodeContainer.classList.contains('hidden')) {
+    // Clear previous QR code
+    qrcodeElement.innerHTML = '';
+    qrcodeTextElement.textContent = '';
+
+    const qrData = createQRCodeData()
+        .replace(/\n+/g, ' ')
+        .trim();
+
+    qrcodeTextElement.textContent = qrData;
+
+    // ⬇️ ΑΠΑΡΑΙΤΗΤΟ: περίμενε να εμφανιστεί το container
+    setTimeout(() => {
+        try {
+            new QRCode(qrcodeElement, {
+                text: qrData,
+                width: 200,
+                height: 200,
+                colorDark: "#000000",
+                colorLight: "#ffffff",
+                correctLevel: QRCode.CorrectLevel.L,
+                typeNumber: 10
+            });
+
+            showNotification('QR Code δημιουργήθηκε επιτυχώς', 'success');
+
+        } catch (error) {
+            console.error('QR Code error:', error);
+            qrcodeElement.innerHTML = `
+                <div style="text-align: center; padding: 20px;">
+                    <i class="fas fa-exclamation-triangle fa-3x" style="color: #ff6b6b;"></i>
+                    <p style="margin-top: 10px;">Δεν μπορεί να δημιουργηθεί QR Code</p>
+                    <p style="font-size: 0.9rem; color: #666;">Χρησιμοποιήστε το κείμενο παρακάτω.</p>
+                </div>
+            `;
+            showNotification('Σφάλμα δημιουργίας QR Code', 'warning');
         }
+    }, 0);
+}
 
         /**
          * Create QR code data - shortened version to fit QR limits
@@ -2813,6 +2816,7 @@ ${notes || 'Δεν υπάρχουν σημειώσεις.'}
 </DOCUMENT></DOCUMENT>
 
 </DOCUMENT>
+
 
 
 
