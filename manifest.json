@@ -1,0 +1,22 @@
+{
+  "name": "Υπολογιστής Διαφοράς Χρόνου Καταγραφικών",
+  "short_name": "ΥΔΕΕ Χρόνος",
+  "description": "Εργαλείο Υπολογισμού Διαφοράς Χρόνου Καταγραφικών",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#133f64",
+  "theme_color": "#133f64",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icons/android/android-launchericons-192-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/android/android-launchericons-512-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
