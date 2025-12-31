@@ -2,7 +2,7 @@
   "name": "Υπολογιστής Διαφοράς Χρόνου Καταγραφικών",
   "short_name": "ΥΔΕΕ Κατερίνης",
   "description": "Εργαλείο Υπολογισμού Διαφοράς Χρόνου Καταγραφικών - Έκδοση 2.0",
-  "start_url": "./index.html",
+  "start_url": "./",
   "display": "standalone",
   "background_color": "#133f64",
   "theme_color": "#133f64",
@@ -459,4 +459,5 @@
   ]
 
 }
+
 
