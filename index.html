@@ -29,7 +29,7 @@
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
-    <meta name="apple-mobile-web-app-title" content="ΥΔΕΕ Κατερίνης">
+    <meta name="apple-mobile-web-app-title" content="Υ.Δ.Ε.Ε. Κατερίνης">
     <style>
         /* CSS Variables for Themes */
         :root {
@@ -1148,7 +1148,7 @@
 
         <!-- Footer -->
         <footer class="footer">
-            <p>Ανάπτυξη εργαλείου από Υ.Δ.Ε.Ε. Κατερίνης για εσωτερική χρήση | Έκδοση 2.0 | Ενημερώθηκε: Δεκέμβριος 2025</p>
+            <p>Ανάπτυξη εφαρμογής από Υ.Δ.Ε.Ε. Κατερίνης | Έκδοση 2.0 | Ενημερώθηκε: Δεκέμβριος 2025</p>
             <p>© <span id="currentYear"></span> Υ.Δ.Ε.Ε. Κατερίνης - Με επιφύλαξη παντός δικαιώματος</p>
         </footer>
     </div>
@@ -2444,8 +2444,8 @@ ${locationInfo}
 ${notes || 'Δεν υπάρχουν σημειώσεις.'}
 
 ══════════════════════════════════════════════════
-ΕΡΓΑΛΕΙΟ ΥΠΟΛΟΓΙΣΜΟΥ ΔΙΑΦΟΡΑΣ ΧΡΟΝΟΥ ΚΑΤΑΓΡΑΦΙΚΩΝ - Έκδοση 2.0
-Για εσωτερική χρήση - Υ.Δ.Ε.Ε. Κατερίνης`;
+Εργαλείο Υπολογισμού Διαφοράς Χρόνου Καταγραφικών - Έκδοση 2.0
+Για υπηρεσιακή χρήση - Υ.Δ.Ε.Ε. Κατερίνης`;
         }
 
         /**
@@ -2750,9 +2750,9 @@ ${notes || 'Δεν υπάρχουν σημειώσεις.'}
 //Διάρκεια: ${formatDurationGreek(currentResults.duration, false)}
 
 //Έκδοση 2.0 - Υ.Δ.Ε.Ε. Κατερίνης`;
-			return `Πραγματική ${realDate.value} ${realTime.value}
-Καταγραφικού ${recordDate.value} ${recordTime.value}
-Τοποθεσία ${currentResults?.location && currentResults.isLocationConfirmed ? `${currentResults.location.latitude.toFixed(4)}, ${currentResults.location.longitude.toFixed(4)}` : 'Χωρίς τοποθεσία'}`;
+			return `Πραγματική: ${realDate.value} ${realTime.value}
+Καταγραφικού: ${recordDate.value} ${recordTime.value}
+Τοποθεσία: ${currentResults?.location && currentResults.isLocationConfirmed ? `${currentResults.location.latitude.toFixed(4)}, ${currentResults.location.longitude.toFixed(4)}` : 'Χωρίς τοποθεσία'}`;
         }
 
         /**
@@ -2820,6 +2820,7 @@ ${notes || 'Δεν υπάρχουν σημειώσεις.'}
 </DOCUMENT></DOCUMENT>
 
 </DOCUMENT>
+
 
 
 
